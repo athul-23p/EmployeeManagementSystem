@@ -28,8 +28,9 @@ emoji=true
 exact_by_default=true
 
 format.bracket_spacing=false
-
 module.file_ext=.js
+module.file_ext=.native.js
+module.file_ext=.android.js
 module.file_ext=.json
 module.file_ext=.ios.js
 

@@ -1,0 +1,2022 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Employee Management System",
+    "description": "A minimal and easy to follow example of what you need to create a CRUD style API in NodeJs using TypeScript",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000/api/v1",
+      "description": "V1 api local"
+    },
+    {
+      "url": "http://202.142.74.12:3210/api/v1",
+      "description": "V1 api server"
+    }
+  ],
+  "components": {
+    "schemas": {
+      "serverErrorResponse": {
+        "title": "Server Error Response",
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer"
+          },
+          "message": {
+            "type": "string"
+          },
+          "err": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "status": 500,
+          "message": "Something Went Wrong",
+          "err": "Error"
+        }
+      },
+      "badRequestResponse": {
+        "title": "Bad Request Response",
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer"
+          },
+          "message": {
+            "type": "string"
+          },
+          "validationErrors": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "status": 400,
+          "message": "Something Went Wrong",
+          "validationErrors": "Error"
+        }
+      },
+      "forbiddenResponse": {
+        "title": "Forbidden Response",
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "status": 403,
+          "message": "Forbidden"
+        }
+      },
+      "noDataResponseObject": {
+        "title": "No Data Object Response",
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {}
+          }
+        },
+        "example": {
+          "status": 204,
+          "message": "No Data Found",
+          "data": {}
+        }
+      },
+      "createdResponse": {
+        "title": "Created Response",
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {}
+          }
+        },
+        "example": {
+          "status": 201,
+          "message": "Created",
+          "data": {}
+        }
+      },
+      "successResponseObject": {
+        "title": "Success Response",
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {}
+          }
+        },
+        "example": {
+          "status": 200,
+          "message": "Successful",
+          "data": {}
+        }
+      }
+    },
+    "parameters": {
+      "AcceptLanguage": {
+        "name": "accept-language",
+        "in": "header",
+        "description": "Incase we want to send current language along our request",
+        "schema": {
+          "type": "string",
+          "default": "en"
+        }
+      }
+    },
+    "securitySchemes": {
+      "userAccessToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Admins",
+      "description": "API for admins in the system"
+    }
+  ],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "paths": {
+    "/users/login": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "User Login",
+        "description": "User Login",
+        "requestBody": {
+          "description": "An object defining our schema for this request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": ["email", "password"],
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/successResponseObject"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/badRequestResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/forbiddenResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serverErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/users": {
+      "get": {
+        "tags": ["Admins"],
+        "summary": "Get all admins in system",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/Admins"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "userAccessToken": []
+          }
+        ]
+      },
+      "post": {
+        "tags": ["Admins"],
+        "summary": "Create Admins",
+        "description": "API for creating admins",
+        "requestBody": {
+          "description": "An object defining our schema for this request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": ["name", "email"],
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "phoneNumber": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/successResponseObject"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/badRequestResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/forbiddenResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serverErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "userAccessToken": []
+          }
+        ],
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/users/self": {
+      "put": {
+        "tags": ["Admins"],
+        "summary": "Update admins by self",
+        "description": "Returns updated data",
+        "requestBody": {
+          "description": "An object defining our schema for this request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "phoneNumber": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "updatedUser": {
+                          "$ref": "#/definitions/Admin"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "userAccessToken": []
+          }
+        ]
+      }
+    },
+    "/users/{id}": {
+      "put": {
+        "tags": ["Users"],
+        "summary": "Update user by ID",
+        "description": "Returns updated user data",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of user to update",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "An object defining our schema for this request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "phoneNumber": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "updatedUser": {
+                          "$ref": "#/definitions/Admin"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "userAccessToken": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": ["Users"],
+        "summary": "Delete user by ID",
+        "description": "Returns a deleted message",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of user to delete",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/definitions/Admin"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "userAccessToken": []
+          }
+        ]
+      }
+    },
+    "/designations": {
+      "post": {
+        "tags": ["Designations"],
+        "summary": "Create Designations",
+        "description": "API for creating technology",
+        "requestBody": {
+          "description": "An object defining our schema for this request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": ["name"],
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/successResponseObject"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/badRequestResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/forbiddenResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serverErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "userAccessToken": []
+          }
+        ],
+        "x-codegen-request-body-name": "body"
+      },
+      "get": {
+        "tags": ["Designations"],
+        "summary": "Get all designations in system",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "description": "Name of designation that needs to be searched",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "How many designations to be returned per page",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "How many designations to be skipped",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/Designations"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "userAccessToken": []
+          }
+        ]
+      }
+    },
+    "/designations/{id}": {
+      "get": {
+        "tags": ["Designations"],
+        "summary": "Find designation by ID",
+        "description": "Returns a single designation",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of designation to return",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/DesignationSingle"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "userAccessToken": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": ["Designations"],
+        "summary": "Update designation by ID",
+        "description": "Returns updated message",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of designation to update",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "An object defining our schema for this request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": ["name"],
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/DesignationUpdate"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "userAccessToken": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": ["Designations"],
+        "summary": "Delete designation by ID",
+        "description": "Returns deleted message",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of designation to delete",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/DesignationUpdate"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "userAccessToken": []
+          }
+        ]
+      }
+    },
+    "/technologies": {
+      "post": {
+        "tags": ["Technologies"],
+        "summary": "Create Technologies",
+        "description": "API for creating Technology",
+        "requestBody": {
+          "description": "An object defining our schema for this request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": ["name"],
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/successResponseObject"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/badRequestResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/forbiddenResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serverErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "userAccessToken": []
+          }
+        ],
+        "x-codegen-request-body-name": "body"
+      },
+      "get": {
+        "tags": ["Technologies"],
+        "summary": "Get all Technologies in system",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "description": "Name of technology that needs to be searched",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "How many technologies to be returned per page",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "How many technologies to be skipped",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/Technologies"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "userAccessToken": []
+          }
+        ]
+      }
+    },
+    "/technologies/{id}": {
+      "get": {
+        "tags": ["Technologies"],
+        "summary": "Find technology by ID",
+        "description": "Returns a single technology",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of technology to return",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/TechnologySingle"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "userAccessToken": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": ["Technologies"],
+        "summary": "Update technology by ID",
+        "description": "Returns updated message",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of technology to update",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "An object defining our schema for this request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": ["name"],
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/TechnologyUpdate"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "userAccessToken": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": ["Technologies"],
+        "summary": "Delete technology by ID",
+        "description": "Returns deleted message",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of technology to delete",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/TechnologyUpdate"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "userAccessToken": []
+          }
+        ]
+      }
+    },
+    "/employees": {
+      "post": {
+        "tags": ["Employees"],
+        "summary": "Create Employee",
+        "description": "API for creating employees",
+        "requestBody": {
+          "description": "An object defining our schema for this request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "name",
+                  "email",
+                  "designation",
+                  "technologies",
+                  "reportsTo",
+                  "joiningDate"
+                ],
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "designation": {
+                    "type": "string"
+                  },
+                  "technologies": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "reportsTo": {
+                    "type": "string"
+                  },
+                  "joiningDate": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/successResponseObject"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/badRequestResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/forbiddenResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serverErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "userAccessToken": []
+          }
+        ],
+        "x-codegen-request-body-name": "body"
+      },
+      "get": {
+        "tags": ["Employees"],
+        "summary": "Get all employees in system",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Name or email of employee that needs to be searched",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "designation",
+            "in": "query",
+            "description": "DesignationID of employee that needs to be searched",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "technologies",
+            "in": "query",
+            "description": "technology IDs of employee that needs to be searched",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "How many designations to be returned per page",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "How many designations to be skipped",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/Employees"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "userAccessToken": []
+          }
+        ]
+      }
+    },
+    "/employees/{id}": {
+      "get": {
+        "tags": ["Employees"],
+        "summary": "Find employee by ID",
+        "description": "Returns a single employee",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of employee to return",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "employee": {
+                          "$ref": "#/definitions/Employee"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "userAccessToken": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": ["Employees"],
+        "summary": "Update employee by ID",
+        "description": "Returns updated employee data",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of employee to update",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "An object defining our schema for this request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "phoneNumber": {
+                    "type": "string"
+                  },
+                  "designation": {
+                    "type": "string"
+                  },
+                  "technologies": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "joiningDate": {
+                    "type": "string"
+                  },
+                  "reportsTo": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/DesignationUpdate"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "userAccessToken": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": ["Employees"],
+        "summary": "Delete employee by ID",
+        "description": "Returns a deleted message",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of employee to delete",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "userAccessToken": []
+          }
+        ]
+      }
+    },
+    "/requisitions": {
+      "post": {
+        "tags": ["Requisitions"],
+        "summary": "Create Requisitions",
+        "description": "API for creating requisitions",
+        "requestBody": {
+          "description": "An object defining our schema for this request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "title",
+                  "minExpInMonths",
+                  "heading",
+                  "description"
+                ],
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string"
+                  },
+                  "minExpInMonths": {
+                    "type": "number"
+                  },
+                  "heading": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/successResponseObject"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/badRequestResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/forbiddenResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serverErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "userAccessToken": []
+          }
+        ],
+        "x-codegen-request-body-name": "body"
+      },
+      "get": {
+        "tags": ["Requisitions"],
+        "summary": "Get all requisitons in system",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "description": "title , expiresin , heading , description of requision that needs to be searched",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "How many requisitions to be returned per page",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page Number to be returned",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/Requisitions"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "userAccessToken": []
+          }
+        ]
+      }
+    },
+    "/requisitions/{id}": {
+      "get": {
+        "tags": ["Requisitions"],
+        "summary": "Find requisition by ID",
+        "description": "Returns a single requisiton",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of requisition to return",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "requisition": {
+                          "$ref": "#/definitions/Requisition"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "userAccessToken": []
+          }
+        ]
+      },
+      "put": {
+        "tags": ["Requisitions"],
+        "summary": "Update requisition by ID",
+        "description": "Returns updated requisition data",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of requisition to update",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "An object defining our schema for this request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string"
+                  },
+                  "minExpInMonths": {
+                    "type": "number"
+                  },
+                  "heading": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "updatedRequisition": {
+                          "$ref": "#/definitions/Requisition"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "userAccessToken": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": ["Requisitions"],
+        "summary": "Delete requisition by ID",
+        "description": "Returns a deleted message",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of requisition to delete",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "$ref": "#/definitions/Requisition"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "userAccessToken": []
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "id": {
+      "type": "string"
+    },
+    "Admin": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/id"
+        },
+        "name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "phoneNumber": {
+          "type": "boolean"
+        },
+        "role": {
+          "type": "string"
+        },
+        "generatedPasswordChangeDate": {
+          "type": "string"
+        }
+      }
+    },
+    "Admins": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "count": {
+              "type": "integer"
+            },
+            "pagination": {
+              "type": "object",
+              "properties": {
+                "limit": {
+                  "type": "integer"
+                },
+                "currentPage": {
+                  "type": "integer"
+                },
+                "totalPage": {
+                  "type": "integer"
+                }
+              }
+            },
+            "users": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Admin"
+              }
+            }
+          }
+        }
+      }
+    },
+    "Designation": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/id"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "DesignationSingle": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "designation": {
+              "$ref": "#/definitions/Designation"
+            }
+          }
+        }
+      }
+    },
+    "DesignationUpdate": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "type": "object"
+        }
+      }
+    },
+    "Designations": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "count": {
+              "type": "integer"
+            },
+            "pagination": {
+              "type": "object",
+              "properties": {
+                "limit": {
+                  "type": "integer"
+                },
+                "currentPage": {
+                  "type": "integer"
+                },
+                "totalPage": {
+                  "type": "integer"
+                }
+              }
+            },
+            "designations": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Designation"
+              }
+            }
+          }
+        }
+      }
+    },
+    "Technology": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/id"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "TechnologySingle": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "technology": {
+              "$ref": "#/definitions/Technology"
+            }
+          }
+        }
+      }
+    },
+    "TechnologyUpdate": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "type": "object"
+        }
+      }
+    },
+    "Technologies": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "count": {
+              "type": "integer"
+            },
+            "pagination": {
+              "type": "object",
+              "properties": {
+                "limit": {
+                  "type": "integer"
+                },
+                "currentPage": {
+                  "type": "integer"
+                },
+                "totalPage": {
+                  "type": "integer"
+                }
+              }
+            },
+            "technologies": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Technology"
+              }
+            }
+          }
+        }
+      }
+    },
+    "ReportsTo": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/id"
+        },
+        "name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "phoneNumber": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        },
+        "generatedPasswordChangeDate": {
+          "type": "string"
+        }
+      }
+    },
+    "Employee": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/id"
+        },
+        "name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "phoneNumber": {
+          "type": "string"
+        },
+        "joiningDate": {
+          "type": "string"
+        },
+        "cv": {
+          "type": "string"
+        },
+        "reportsTo": {
+          "$ref": "#/definitions/ReportsTo"
+        },
+        "designation": {
+          "$ref": "#/definitions/Designation"
+        },
+        "technologies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Technology"
+          }
+        }
+      }
+    },
+    "Employees": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "count": {
+              "type": "integer"
+            },
+            "pagination": {
+              "type": "object",
+              "properties": {
+                "limit": {
+                  "type": "integer"
+                },
+                "currentPage": {
+                  "type": "integer"
+                },
+                "totalPage": {
+                  "type": "integer"
+                }
+              }
+            },
+            "employees": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Employee"
+              }
+            }
+          }
+        }
+      }
+    },
+    "Requisition": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/id"
+        },
+        "title": {
+          "type": "string"
+        },
+        "minExpInMonths": {
+          "type": "number"
+        },
+        "heading": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        }
+      }
+    },
+    "Requisitions": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "count": {
+              "type": "integer"
+            },
+            "pagination": {
+              "type": "object",
+              "properties": {
+                "limit": {
+                  "type": "integer"
+                },
+                "currentPage": {
+                  "type": "integer"
+                },
+                "totalPage": {
+                  "type": "integer"
+                }
+              }
+            },
+            "requisitions": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Requisition"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

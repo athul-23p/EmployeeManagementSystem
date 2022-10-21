@@ -1,3 +1,4 @@
+import {NavigationContainer} from '@react-navigation/native';
 import React from 'react';
 
 import {
@@ -9,15 +10,19 @@ import {
   useColorScheme,
   View,
 } from 'react-native';
-
+import {Provider as PaperProvider} from 'react-native-paper';
+import {Provider as StoreProvider} from 'react-redux';
+import AuthNavigator from './src/navigators/AuthNavigator';
+import store from './src/redux/store';
 const App = () => {
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-    </SafeAreaView>
+    <PaperProvider>
+      <StoreProvider store={store}>
+        <NavigationContainer>
+          <AuthNavigator />
+        </NavigationContainer>
+      </StoreProvider>
+    </PaperProvider>
   );
 };
 
