@@ -4,13 +4,13 @@ import {useForm, Controller} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import {Button, Text, TextInput} from 'react-native-paper';
-import {SectionList, StyleSheet, ToastAndroid, View} from 'react-native';
+import { StyleSheet, ToastAndroid, View} from 'react-native';
 import globalStyle from '../../styles/globalStyles';
 import {useDispatch} from 'react-redux';
 import {API_BASE_URL} from '../../config/api';
 import {login} from '../../redux/auth/authSlice';
 import axios from 'axios';
-
+import Config from 'react-native-config'
 import Loader from '../../components/Loader';
 import Error from '../../components/Error';
 
@@ -22,7 +22,7 @@ const userSchema = yup.object().shape({
   password: yup.string().required('Password is required'),
 });
 function LoginScreen({navigation}) {
-  console.log(process.env, API_BASE_URL);
+  console.log('URL',API_BASE_URL,Config);
   const {
     control,
     handleSubmit,
@@ -40,7 +40,7 @@ function LoginScreen({navigation}) {
   const handleLogin = data => {
     console.log('log in', data);
     setIsLoading(true);
-
+    
     axios
       .post(`${API_BASE_URL}/users/login`, data)
       .then(res => {
