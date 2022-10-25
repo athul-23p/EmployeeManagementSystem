@@ -49,6 +49,15 @@ async function getRequiusitionsCount(token) {
   return res.data.data.count;
 }
 
+async function getDesignations(token,limit,per_page,query) {
+  const res = await axios.get('/designations', {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return res.data.data;
+}
+
 export {
   getDesignationsCount,
   getEmployeesCount,
