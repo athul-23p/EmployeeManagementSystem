@@ -11,19 +11,26 @@ import {
   View,
 } from 'react-native';
 import {Provider as PaperProvider} from 'react-native-paper';
-import {Provider as StoreProvider} from 'react-redux';
+import {Provider as StoreProvider, useSelector} from 'react-redux';
 import AuthNavigator from './src/navigators/AuthNavigator';
+import TabNavigator from './src/navigators/TabNavigator';
 import store from './src/redux/store';
 const App = () => {
   return (
     <PaperProvider>
       <StoreProvider store={store}>
         <NavigationContainer>
-          <AuthNavigator />
+          <Content />
         </NavigationContainer>
       </StoreProvider>
     </PaperProvider>
   );
+};
+
+const Content = () => {
+  const {isAuthenticated} = useSelector(store => store.auth);
+
+  return isAuthenticated ? <TabNavigator /> : <AuthNavigator />;
 };
 
 const styles = StyleSheet.create({});

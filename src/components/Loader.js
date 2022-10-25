@@ -4,8 +4,8 @@ import {ActivityIndicator} from 'react-native-paper';
 import globalStyles from '../styles/globalStyles';
 function Loader(props) {
   return (
-    <View>
-      <ActivityIndicator size={'large'} style={globalStyles.loader} />
+    <View style={[globalStyles.center]}>
+      <ActivityIndicator size={'large'} />
     </View>
   );
 }

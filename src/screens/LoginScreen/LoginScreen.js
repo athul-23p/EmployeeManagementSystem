@@ -4,13 +4,13 @@ import {useForm, Controller} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import {Button, Text, TextInput} from 'react-native-paper';
-import { StyleSheet, ToastAndroid, View} from 'react-native';
+import {StyleSheet, ToastAndroid, View} from 'react-native';
 import globalStyle from '../../styles/globalStyles';
 import {useDispatch} from 'react-redux';
-import {API_BASE_URL} from '../../config/api';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {login} from '../../redux/auth/authSlice';
-import axios from 'axios';
-import Config from 'react-native-config'
+import {login as userLogin} from '../../services/auth.services';
+
 import Loader from '../../components/Loader';
 import Error from '../../components/Error';
 
@@ -22,7 +22,7 @@ const userSchema = yup.object().shape({
   password: yup.string().required('Password is required'),
 });
 function LoginScreen({navigation}) {
-  console.log('URL',API_BASE_URL,Config);
+  // console.log('URL', API_BASE_URL, Config.REACT_APP_BASE_URL);
   const {
     control,
     handleSubmit,
@@ -38,19 +38,32 @@ function LoginScreen({navigation}) {
   const [isError, setIsError] = useState(false);
   const dispatch = useDispatch();
   const handleLogin = data => {
-    console.log('log in', data);
+    // console.log('log in', data);
     setIsLoading(true);
-    
-    axios
-      .post(`${API_BASE_URL}/users/login`, data)
+
+    userLogin(data)
       .then(res => {
         console.log(res.data);
         setIsLoading(false);
-        const {token,user} = res.data.data;
-        const payload = {user,accessToken:token.access_token,isAuthenticated:true}
-        console.log(payload);
+        const {token, user} = res.data.data;
+        const payload = {
+          user,
+          accessToken: token.access_token,
+          isAuthenticated: true,
+        };
+        // console.log(payload);
         dispatch(login(payload));
-        ToastAndroid.show("Log in successfull",2000);
+
+        // admin logging in for the first time
+        // if (
+        //   user.generatedPasswordChangeDate === null &&
+        //   user.role != ROLES.SUPER_ADMIN
+        // ) {
+        //   navigation.navigate('PasswordReset');
+        // } else {
+
+        // }
+        ToastAndroid.show('Log in successfull', 2000);
       })
       .catch(err => {
         console.log(err);
@@ -73,8 +86,10 @@ function LoginScreen({navigation}) {
         ]}>
         Log In
       </Text>
-
       <View style={styles.loginForm}>
+        <View style={styles.imageContainer}>
+          <Icon name="account-circle" color="#6200EE" size={50} />
+        </View>
         <Controller
           control={control}
           name="email"
@@ -115,11 +130,15 @@ function LoginScreen({navigation}) {
 const styles = StyleSheet.create({
   loginForm: {
     margin: 10,
-    padding: 20,
+    padding: 25,
     paddingVertical: 50,
     backgroundColor: 'white',
     elevation: 10,
     borderRadius: 10,
+  },
+  imageContainer: {
+    marginVertical: 15,
+    alignItems: 'center',
   },
 });
 export default LoginScreen;
