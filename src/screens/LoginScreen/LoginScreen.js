@@ -43,7 +43,7 @@ function LoginScreen({navigation}) {
 
     userLogin(data)
       .then(res => {
-        console.log(res.data);
+        // console.log(res.data);
         setIsLoading(false);
         const {token, user} = res.data.data;
         const payload = {

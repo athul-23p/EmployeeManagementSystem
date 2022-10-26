@@ -1,10 +1,11 @@
 import {StyleSheet} from 'react-native';
 
 const styles = StyleSheet.create({
-  conatiner: {
+  container: {
     flex: 1,
     padding: 10,
     backgroundColor: 'white',
+    borderWidth: 1,
   },
   heading: {
     fontSize: 28,
@@ -20,6 +21,17 @@ const styles = StyleSheet.create({
   },
   mediumFontSize: {
     fontSize: 18,
+  },
+  fab: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+  },
+  modal: {
+    marginHorizontal: 20,
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 15,
   },
 });
 

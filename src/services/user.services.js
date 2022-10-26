@@ -48,9 +48,50 @@ async function getRequiusitionsCount(token) {
   });
   return res.data.data.count;
 }
-
-async function getDesignations(token,limit,per_page,query) {
+// get list of designations
+/**
+ * limit : per_page_limit
+ * page : offset
+ *
+ */
+async function getDesignations(token, page = 0, name, limit = 15) {
   const res = await axios.get('/designations', {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    params: {
+      name,
+      limit,
+      page,
+    },
+  });
+  return res.data.data;
+}
+
+async function addDesignation(token, name) {
+  const res = await axios.post(
+    '/designations',
+    {name},
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+  return res.data.data;
+}
+
+async function updateDesignationById(token, id, update) {
+  const res = await axios.patch(`/designations/${id}`, update, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return res.data.data;
+}
+
+async function deleteDesignationById(token, id) {
+  const res = await axios.delete(`/designations/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -60,6 +101,10 @@ async function getDesignations(token,limit,per_page,query) {
 
 export {
   getDesignationsCount,
+  getDesignations,
+  addDesignation,
+  updateDesignationById,
+  deleteDesignationById,
   getEmployeesCount,
   getRequiusitionsCount,
   getTechnologiesCount,

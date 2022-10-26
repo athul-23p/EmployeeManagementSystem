@@ -28,7 +28,7 @@ function DashBoardScreen({navigation}) {
     requisitions: 0,
   });
 
-  if (user.role != ROLES.SUPER_ADMIN) {
+  if (user?.role != ROLES.SUPER_ADMIN) {
     Cards.shift();
   }
   useEffect(() => {
@@ -39,7 +39,7 @@ function DashBoardScreen({navigation}) {
         stats.employees = await getEmployeesCount(accessToken);
         stats.requisitions = await getRequiusitionsCount(accessToken);
         stats.technologies = await getTechnologiesCount(accessToken);
-        if (user.role == ROLES.SUPER_ADMIN) {
+        if (user?.role == ROLES.SUPER_ADMIN) {
           stats.users = await getAllAdminsCount(accessToken);
         }
         setCounts(stats);

@@ -1,13 +1,15 @@
 import React from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, Pressable} from 'react-native';
 import {Text} from 'react-native-paper';
 
 function StatisticsCard({route, title, stats}) {
   return (
-    <View style={[styles.container]}>
-      <Text style={styles.title}>{title}</Text>
-      <Text style={styles.stats}>{stats}</Text>
-    </View>
+    <Pressable style={[styles.container]} android_ripple={{color: 'lightgray'}}>
+      <View>
+        <Text style={styles.title}>{title}</Text>
+        <Text style={styles.stats}>{stats}</Text>
+      </View>
+    </Pressable>
   );
 }
 
