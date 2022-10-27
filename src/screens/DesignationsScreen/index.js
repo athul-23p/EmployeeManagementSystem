@@ -28,7 +28,8 @@ const designationSchema = yup.object().shape({
 function DesignationsScreen({navigation}) {
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(0);
-  const [data, setData] = useState({});
+  const [pagination, setPagination] = useState({});
+  const [designations, setDesignations] = useState([]);
 
   const [showModal, setShowModal] = useState(false);
 
@@ -49,25 +50,6 @@ function DesignationsScreen({navigation}) {
   const openModal = () => setShowModal(true);
   const closeModal = () => setShowModal(false);
 
-  const handleSearchInput = value => {
-    setSearchQuery(value);
-  };
-
-  const handleSearch = () => {
-    console.log('submit', searchQuery);
-    setIsLoading(true);
-    getDesignations(accessToken, 0, searchQuery)
-      .then(res => {
-        setIsLoading(false);
-        setData(res);
-        setPage(0);
-      })
-      .catch(err => {
-        console.log(err);
-        setIsLoading(false);
-      });
-  };
-
   const handleAddDesignation = data => {
     setIsLoading(true);
     addDesignation(accessToken, {name: data.designation})
@@ -75,7 +57,8 @@ function DesignationsScreen({navigation}) {
         console.log(res);
         setIsLoading(false);
         closeModal();
-        ToastAndroid.show(`Added ${res.name} to Designations`, 1500);
+        ToastAndroid.show(`Added ${res.data.name} to Designations`, 1500);
+        setDesignations([]);
         fetchData();
       })
       .catch(err => {
@@ -84,12 +67,21 @@ function DesignationsScreen({navigation}) {
       });
   };
 
+  const handleSearch = () => {
+    setDesignations([]);
+    setPage(0);
+    fetchData();
+  };
+
   const fetchData = () => {
     setIsLoading(true);
     getDesignations(accessToken, page, searchQuery)
       .then(res => {
         setIsLoading(false);
-        setData(res);
+        let {pagination, designations} = res.data;
+
+        setPagination(pagination);
+        setDesignations(prev => [...prev, ...designations]);
         // console.log(res);
       })
       .catch(err => {
@@ -100,52 +92,64 @@ function DesignationsScreen({navigation}) {
   };
 
   const refreshData = () => {
-    if (page !== 0) {
-      setPage(0);
-    } else {
+    setDesignations([]);
+    setPage(0);
+    fetchData();
+  };
+
+  const nextPage = () => {
+    if (page < pagination?.totalPage - 1) {
+      setPage(page => page + 1);
       fetchData();
+    } else {
+      ToastAndroid.show('End of list', 1500);
     }
   };
 
+  const clearAll = () => {
+    if (searchQuery) {
+      setSearchQuery('');
+      handleSearch();
+    }
+  };
   const renderItem = ({item}) => (
     <DesignationCard item={item} token={accessToken} refresh={refreshData} />
   );
   useEffect(() => {
     fetchData();
-  }, [page]);
+  }, []);
 
-  if (isLoading) {
-    return <Loader />;
-  } else if (isError) {
-    return <Error handleError={() => setIsError(false)} />;
-  }
   return (
     <TabScreenWrapper title="Designations">
       <View styles={[globalStyles.container]}>
         <View styles={[styles.searchbarContainer]}>
           <Searchbar
             placeholder="Search by name"
-            onChangeText={handleSearchInput}
+            onChangeText={setSearchQuery}
             value={searchQuery}
             onSubmitEditing={handleSearch}
             style={{padding: 5, margin: 10, borderRadius: 29}}
           />
           <View style={[styles.rowEnd]}>
-            <Button
-              onPress={() => {
-                setSearchQuery('');
-                setPage(0);
-                fetchData();
-              }}>
-              Clear All
-            </Button>
+            <Button onPress={clearAll}>Clear All</Button>
           </View>
         </View>
-        <FlatList
-          data={data?.designations}
-          renderItem={renderItem}
-          keyExtractor={item => item.id}
-        />
+        {isLoading ? (
+          <Loader />
+        ) : isError ? (
+          <Error handleError={() => setIsError(false)} />
+        ) : (
+          <FlatList
+            data={designations}
+            renderItem={renderItem}
+            keyExtractor={item => item.id}
+            ListEmptyComponent={() => (
+              <Text style={{textAlign: 'center'}}>No results found</Text>
+            )}
+            onEndReachedThreshold={0.4}
+            onEndReached={nextPage}
+          />
+        )}
       </View>
       <Portal>
         {/* add designation modal */}

@@ -24,7 +24,7 @@ async function getTechnologiesCount(token) {
 }
 
 async function getTechnologies(token, page = 0, name, limit = 10) {
-  const res = await axios.get('/tehcnologies', {
+  const res = await axios.get('/technologies', {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -57,7 +57,7 @@ async function getTechnologyById(token, id) {
 }
 
 async function updateTechnologyById(token, id, data) {
-  const res = await axios.update(`/technologies/${id}`, data, {
+  const res = await axios.patch(`/technologies/${id}`, data, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -81,6 +81,56 @@ async function getEmployeesCount(token) {
     },
   });
   return res.data.data.count;
+}
+
+async function addRequisition(token, data) {
+  const res = await axios.post('/requisitions', data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return res.data;
+}
+
+async function getRequisitions(token, page = 1, search, limit = 10) {
+  const res = await axios.get('/requisitions', data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    params: {
+      page,
+      search,
+      limit,
+    },
+  });
+  return res.data;
+}
+
+async function getRequisitionById(token, id) {
+  const res = await axios.get(`/requisitions/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return res.data;
+}
+
+async function updateRequisitionById(token, id, data) {
+  const res = await axios.put(`/requisitions/${id}`, data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return res.data;
+}
+
+async function deleteRequisitionById(token, id) {
+  const res = await axios.delete(`/requisitions/${id}`, data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return res.data;
 }
 
 async function getRequisitionsCount(token) {
@@ -118,7 +168,7 @@ async function getDesignations(token, page = 0, name, limit = 15) {
       page,
     },
   });
-  return res.data.data;
+  return res.data;
 }
 
 async function addDesignation(token, data) {
@@ -127,7 +177,7 @@ async function addDesignation(token, data) {
       Authorization: `Bearer ${token}`,
     },
   });
-  return res.data.data;
+  return res.data;
 }
 
 async function updateDesignationById(token, id, update) {
@@ -136,7 +186,7 @@ async function updateDesignationById(token, id, update) {
       Authorization: `Bearer ${token}`,
     },
   });
-  return res.data.data;
+  return res.data;
 }
 
 async function deleteDesignationById(token, id) {
@@ -145,7 +195,7 @@ async function deleteDesignationById(token, id) {
       Authorization: `Bearer ${token}`,
     },
   });
-  return res.data.data;
+  return res.data;
 }
 
 export {
@@ -155,6 +205,11 @@ export {
   updateDesignationById,
   deleteDesignationById,
   getEmployeesCount,
+  addRequisition,
+  getRequisitions,
+  getRequisitionById,
+  updateRequisitionById,
+  deleteRequisitionById,
   getRequisitionsCount,
   getTechnologiesCount,
   getTechnologies,

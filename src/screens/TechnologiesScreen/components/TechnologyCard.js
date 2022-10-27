@@ -14,15 +14,15 @@ import * as yup from 'yup';
 import {useForm, Controller} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import {
-  deleteDesignationById,
-  updateDesignationById,
+  deleteTechnologyById,
+  updateTechnologyById,
 } from '../../../services/user.services';
 import globalStyles from '../../../styles/globalStyles';
 import DeleteDialog from '../../../components/DeleteDialog';
 const schema = yup.object().shape({
-  designation: yup.string().required('Required'),
+  technology: yup.string().required('Required'),
 });
-function DesignationCard({item, token, refresh}) {
+function TechnologyCard({item, token, refresh}) {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -36,14 +36,15 @@ function DesignationCard({item, token, refresh}) {
     formState: {errors},
   } = useForm({
     defaultValues: {
-      designation: item.name,
+      technology: item.name,
     },
     resolver: yupResolver(schema),
   });
 
   const handleUpdate = data => {
     setIsLoading(true);
-    updateDesignationById(token, item.id, {name: data.designation})
+    console.log('update', data);
+    updateTechnologyById(token, item.id, {name: data.technology})
       .then(res => {
         // console.log(res);
         ToastAndroid.show('Update Successfull', 1000);
@@ -59,7 +60,7 @@ function DesignationCard({item, token, refresh}) {
 
   const handleDelete = () => {
     setIsLoading(true);
-    deleteDesignationById(token, item.id)
+    deleteTechnologyById(token, item.id)
       .then(res => {
         // console.log(res);
         ToastAndroid.show('Delete Successfull', 1000);
@@ -89,21 +90,21 @@ function DesignationCard({item, token, refresh}) {
           visible={showEditModal}
           onDismiss={closeEditModal}
           contentContainerStyle={[globalStyles.modal]}>
-          <Headline style={{marginVertical: 10}}>Edit Designation</Headline>
+          <Headline style={{marginVertical: 10}}>Edit Technology</Headline>
           <Controller
             control={control}
-            name="designation"
+            name="technology"
             render={({field: {onChange, onBlur, value}}) => (
               <TextInput
                 onChangeText={onChange}
                 value={value}
                 mode="outlined"
-                label={'Designation'}
+                label={'Technology'}
                 style={globalStyles.textInput}
               />
             )}
           />
-          {errors.designation && <Text>{errors.designation.message}</Text>}
+          {errors.technology && <Text>{errors.technology.message}</Text>}
           <View style={[styles.modalButtonGroup]}>
             <Button onPress={closeEditModal}>Close</Button>
             {isLoading ? (
@@ -122,7 +123,6 @@ function DesignationCard({item, token, refresh}) {
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
@@ -146,4 +146,4 @@ const styles = StyleSheet.create({
     color: 'black',
   },
 });
-export default DesignationCard;
+export default TechnologyCard;
