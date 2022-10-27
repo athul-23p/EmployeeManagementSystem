@@ -1,7 +1,9 @@
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import DashBoardScreen from '../screens/DashboardScreen';
 import PasswordResetScreen from './../screens/PasswordResetScreen';
-import DesignationScreen from './../screens/DesignationScreen';
+import DesignationsScreen from './../screens/DesignationsScreen';
+import TechnologiesScreen from '../screens/TechnologiesScreen';
+
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector} from 'react-redux';
 const Tab = createMaterialBottomTabNavigator();
@@ -18,7 +20,8 @@ function TabNavigator() {
             iconName = 'security';
           } else if (route.name == 'Dashboard') {
             iconName = 'view-dashboard';
-          } else if ((route.name = 'Designations')) iconName = 'briefcase';
+          } else if (route.name == 'Designations') iconName = 'briefcase';
+          else if (route.name == 'Technologies') iconName = 'code-tags';
           return <MaterialIcons size={24} name={iconName} color={color} />;
         },
       })}
@@ -32,9 +35,10 @@ function TabNavigator() {
       />
       <Tab.Screen
         name="Designations"
-        component={DesignationScreen}
+        component={DesignationsScreen}
         options={{title: 'Designations'}}
       />
+      <Tab.Screen name="Technologies" component={TechnologiesScreen} />
       {user.generatedPasswordChangeDate === null &&
         user.role !== 'SUPER_ADMIN' && (
           <Tab.Screen name="PasswordReset" component={PasswordResetScreen} />

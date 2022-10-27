@@ -2,7 +2,9 @@ import React, {useState} from 'react';
 import {StatusBar, ToastAndroid, View} from 'react-native';
 import {Appbar, Menu} from 'react-native-paper';
 import {useDispatch} from 'react-redux';
+import {AuthKey} from '../constants/storage_keys';
 import {logout} from '../redux/auth/authSlice';
+import {removeData} from '../utils/storage';
 
 function TabScreenWrapper({title, children}) {
   const [showMenu, setShowMenu] = useState(false);
@@ -10,8 +12,14 @@ function TabScreenWrapper({title, children}) {
   const openMenu = () => setShowMenu(true);
   const closeMenu = () => setShowMenu(false);
   const handleLogout = () => {
-    dispatch(logout());
-    ToastAndroid.show('Log out successfull', 1400);
+    removeData(AuthKey)
+      .then(() => {
+        dispatch(logout());
+        ToastAndroid.show('Log out successfull', 1400);
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>

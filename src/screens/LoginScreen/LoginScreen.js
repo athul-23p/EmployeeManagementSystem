@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {useForm, Controller} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
@@ -13,6 +13,8 @@ import {login as userLogin} from '../../services/auth.services';
 
 import Loader from '../../components/Loader';
 import Error from '../../components/Error';
+import {getData, storeData} from '../../utils/storage';
+import {AuthKey} from '../../constants/storage_keys';
 
 const userSchema = yup.object().shape({
   email: yup
@@ -34,7 +36,7 @@ function LoginScreen({navigation}) {
     },
     resolver: yupResolver(userSchema),
   });
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
   const dispatch = useDispatch();
   const handleLogin = data => {
@@ -52,17 +54,10 @@ function LoginScreen({navigation}) {
           isAuthenticated: true,
         };
         // console.log(payload);
-        dispatch(login(payload));
+        storeData(AuthKey, payload)
+          .then(() => dispatch(login(payload)))
+          .catch(err => console.log(err));
 
-        // admin logging in for the first time
-        // if (
-        //   user.generatedPasswordChangeDate === null &&
-        //   user.role != ROLES.SUPER_ADMIN
-        // ) {
-        //   navigation.navigate('PasswordReset');
-        // } else {
-
-        // }
         ToastAndroid.show('Log in successfull', 2000);
       })
       .catch(err => {
@@ -72,6 +67,18 @@ function LoginScreen({navigation}) {
       });
   };
 
+  useEffect(() => {
+    getData(AuthKey)
+      .then(val => {
+        if (val !== null) dispatch(login(val));
+        setIsLoading(false);
+      })
+      .catch(err => {
+        console.log(err);
+        setIsLoading(false);
+        setIsError(true);
+      });
+  }, []);
   if (isLoading) {
     return <Loader />;
   } else if (isError) {

@@ -7,7 +7,7 @@ import {
   getAllAdminsCount,
   getDesignationsCount,
   getEmployeesCount,
-  getRequiusitionsCount,
+  getRequisitionsCount,
   getTechnologiesCount,
 } from '../../services/user.services';
 import StatisticsCard from './components/StatisticsCard';
@@ -37,7 +37,7 @@ function DashBoardScreen({navigation}) {
       try {
         stats.designations = await getDesignationsCount(accessToken);
         stats.employees = await getEmployeesCount(accessToken);
-        stats.requisitions = await getRequiusitionsCount(accessToken);
+        stats.requisitions = await getRequisitionsCount(accessToken);
         stats.technologies = await getTechnologiesCount(accessToken);
         if (user?.role == ROLES.SUPER_ADMIN) {
           stats.users = await getAllAdminsCount(accessToken);

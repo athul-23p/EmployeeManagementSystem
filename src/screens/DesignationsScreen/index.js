@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, FlatList} from 'react-native';
+import {View, Text, StyleSheet, FlatList, ToastAndroid} from 'react-native';
 import {
   Button,
   FAB,
@@ -17,20 +17,23 @@ import TabScreenWrapper from '../../components/TabScreenWrapper';
 import globalStyles from './../../styles/globalStyles';
 import {addDesignation, getDesignations} from '../../services/user.services';
 import {useSelector} from 'react-redux';
-import ItemCard from './components/ItemCard';
+import DesignationCard from './components/DesignationCard';
+import Loader from '../../components/Loader';
+import Error from '../../components/Error';
 
 const designationSchema = yup.object().shape({
   designation: yup.string().required('Required'),
 });
 
-function DesignationScreen({navigation}) {
+function DesignationsScreen({navigation}) {
   const [searchQuery, setSearchQuery] = useState('');
+  const [page, setPage] = useState(0);
+  const [data, setData] = useState({});
+
   const [showModal, setShowModal] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
-  const [page, setPage] = useState(0);
-  const [data, setData] = useState({});
 
   const {accessToken} = useSelector(store => store.auth);
   const {
@@ -67,10 +70,12 @@ function DesignationScreen({navigation}) {
 
   const handleAddDesignation = data => {
     setIsLoading(true);
-    addDesignation(accessToken, data.designation)
+    addDesignation(accessToken, {name: data.designation})
       .then(res => {
+        console.log(res);
         setIsLoading(false);
         closeModal();
+        ToastAndroid.show(`Added ${res.name} to Designations`, 1500);
         fetchData();
       })
       .catch(err => {
@@ -85,7 +90,7 @@ function DesignationScreen({navigation}) {
       .then(res => {
         setIsLoading(false);
         setData(res);
-        console.log(res);
+        // console.log(res);
       })
       .catch(err => {
         setIsLoading(false);
@@ -94,14 +99,28 @@ function DesignationScreen({navigation}) {
       });
   };
 
-  const renderItem = ({item}) => <ItemCard item={item} token={accessToken} />;
+  const refreshData = () => {
+    if (page !== 0) {
+      setPage(0);
+    } else {
+      fetchData();
+    }
+  };
 
+  const renderItem = ({item}) => (
+    <DesignationCard item={item} token={accessToken} refresh={refreshData} />
+  );
   useEffect(() => {
     fetchData();
   }, [page]);
 
+  if (isLoading) {
+    return <Loader />;
+  } else if (isError) {
+    return <Error handleError={() => setIsError(false)} />;
+  }
   return (
-    <TabScreenWrapper title="Designation">
+    <TabScreenWrapper title="Designations">
       <View styles={[globalStyles.container]}>
         <View styles={[styles.searchbarContainer]}>
           <Searchbar
@@ -109,7 +128,7 @@ function DesignationScreen({navigation}) {
             onChangeText={handleSearchInput}
             value={searchQuery}
             onSubmitEditing={handleSearch}
-            style={{padding: 5, margin: 10}}
+            style={{padding: 5, margin: 10, borderRadius: 29}}
           />
           <View style={[styles.rowEnd]}>
             <Button
@@ -129,6 +148,7 @@ function DesignationScreen({navigation}) {
         />
       </View>
       <Portal>
+        {/* add designation modal */}
         <Modal
           visible={showModal}
           onDismiss={closeModal}
@@ -182,4 +202,4 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
 });
-export default DesignationScreen;
+export default DesignationsScreen;

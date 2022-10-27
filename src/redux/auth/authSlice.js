@@ -5,6 +5,7 @@ const initialState = {
   accessToken: null,
   user: null,
 };
+
 export const authSlice = createSlice({
   name: 'auth',
   initialState,

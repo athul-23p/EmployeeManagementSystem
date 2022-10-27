@@ -9,6 +9,8 @@ import {
   TextInput,
   Dialog,
   Paragraph,
+  ActivityIndicator,
+  Colors,
 } from 'react-native-paper';
 import * as yup from 'yup';
 import {useForm, Controller} from 'react-hook-form';
@@ -17,11 +19,11 @@ import {
   deleteDesignationById,
   updateDesignationById,
 } from '../../../services/user.services';
-import globalStyles from './../../../styles/globalStyles';
+import globalStyles from '../../../styles/globalStyles';
 const schema = yup.object().shape({
   designation: yup.string().required('Required'),
 });
-function ItemCard({item, token, refresh}) {
+function DesignationCard({item, token, refresh}) {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -40,14 +42,15 @@ function ItemCard({item, token, refresh}) {
     resolver: yupResolver(schema),
   });
 
-  const handleUpdate = designation => {
+  const handleUpdate = data => {
     setIsLoading(true);
-    updateDesignationById(token, item.id, {name: designation})
+    updateDesignationById(token, item.id, {name: data.designation})
       .then(res => {
-        console.log(res);
+        // console.log(res);
         ToastAndroid.show('Update Successfull', 1000);
         setIsLoading(false);
         closeEditModal();
+        refresh();
       })
       .catch(err => {
         setIsLoading(false);
@@ -59,10 +62,11 @@ function ItemCard({item, token, refresh}) {
     setIsLoading(true);
     deleteDesignationById(token, item.id)
       .then(res => {
-        console.log(res);
+        // console.log(res);
         ToastAndroid.show('Delete Successfull', 1000);
         setIsLoading(false);
         closeDialog();
+        refresh();
       })
       .catch(err => {
         setIsLoading(false);
@@ -72,17 +76,21 @@ function ItemCard({item, token, refresh}) {
 
   return (
     <View style={styles.container}>
-      <Text>{item.name}</Text>
+      <Text style={styles.text}>{item.name}</Text>
       <View style={styles.actions}>
-        <IconButton icon="square-edit-outline" onPress={openEditModal} />
-        <IconButton icon="delete" onPress={openDialog} />
+        <IconButton
+          icon="square-edit-outline"
+          onPress={openEditModal}
+          color={Colors.blue800}
+        />
+        <IconButton icon="delete" onPress={openDialog} color={Colors.red700} />
       </View>
       <Portal>
         <Modal
           visible={showEditModal}
           onDismiss={closeEditModal}
           contentContainerStyle={[globalStyles.modal]}>
-          <Headline>Edit Designation</Headline>
+          <Headline style={{marginVertical: 10}}>Edit Designation</Headline>
           <Controller
             control={control}
             name="designation"
@@ -92,15 +100,18 @@ function ItemCard({item, token, refresh}) {
                 value={value}
                 mode="outlined"
                 label={'Designation'}
+                style={globalStyles.textInput}
               />
             )}
           />
           {errors.designation && <Text>{errors.designation.message}</Text>}
           <View style={[styles.modalButtonGroup]}>
             <Button onPress={closeEditModal}>Close</Button>
-            <Button onPress={handleSubmit(handleUpdate)} loading={isLoading}>
-              Update
-            </Button>
+            {isLoading ? (
+              <ActivityIndicator />
+            ) : (
+              <Button onPress={handleSubmit(handleUpdate)}>Update</Button>
+            )}
           </View>
         </Modal>
         <Dialog visible={showDeleteDialog} onDismiss={closeDialog}>
@@ -120,13 +131,14 @@ function ItemCard({item, token, refresh}) {
 
 const styles = StyleSheet.create({
   container: {
-    marginVertical: 5,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 10,
+    marginVertical: 5,
     marginHorizontal: 10,
-    elevation: 10,
+    borderRadius: 10,
+    elevation: 2,
     backgroundColor: 'white',
   },
   actions: {
@@ -136,5 +148,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
+  text: {
+    color: 'black',
+  },
 });
-export default ItemCard;
+export default DesignationCard;
