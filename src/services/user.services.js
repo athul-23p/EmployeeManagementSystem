@@ -93,7 +93,7 @@ async function addRequisition(token, data) {
 }
 
 async function getRequisitions(token, page = 1, search, limit = 10) {
-  const res = await axios.get('/requisitions', data, {
+  const res = await axios.get('/requisitions', {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -125,7 +125,7 @@ async function updateRequisitionById(token, id, data) {
 }
 
 async function deleteRequisitionById(token, id) {
-  const res = await axios.delete(`/requisitions/${id}`, data, {
+  const res = await axios.delete(`/requisitions/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

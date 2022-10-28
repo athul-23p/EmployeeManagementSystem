@@ -1,7 +1,7 @@
 import {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, ScrollView} from 'react-native';
 import {useSelector} from 'react-redux';
-import TabScreenWrapper from '../../components/TabScreenWrapper';
+import AppbarWrapper from '../../components/AppbarWrapper';
 import {ROLES} from '../../constants/roles';
 import {
   getAllAdminsCount,
@@ -50,7 +50,7 @@ function DashBoardScreen({navigation}) {
     getStats();
   }, []);
   return (
-    <TabScreenWrapper title={'Dashboard'}>
+    <AppbarWrapper title={'Dashboard'}>
       {/* <Text>dashboard</Text> */}
       <View style={{width: '100%', alignItems: 'center'}}>
         <ScrollView contentContainerStyle={[styles.cardsContainer]}>
@@ -63,7 +63,7 @@ function DashBoardScreen({navigation}) {
           ))}
         </ScrollView>
       </View>
-    </TabScreenWrapper>
+    </AppbarWrapper>
   );
 }
 

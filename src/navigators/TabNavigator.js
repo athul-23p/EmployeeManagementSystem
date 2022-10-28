@@ -6,6 +6,7 @@ import TechnologiesScreen from '../screens/TechnologiesScreen';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector} from 'react-redux';
+import RequisitionNavigator from './RequisitionNavigator';
 const Tab = createMaterialBottomTabNavigator();
 
 function TabNavigator() {
@@ -22,6 +23,7 @@ function TabNavigator() {
             iconName = 'view-dashboard';
           } else if (route.name == 'Designations') iconName = 'briefcase';
           else if (route.name == 'Technologies') iconName = 'code-tags';
+          else if ((route.name = 'RequisitionNavigator')) iconName = 'domain';
           return <MaterialIcons size={24} name={iconName} color={color} />;
         },
       })}
@@ -43,6 +45,11 @@ function TabNavigator() {
         user.role !== 'SUPER_ADMIN' && (
           <Tab.Screen name="PasswordReset" component={PasswordResetScreen} />
         )}
+      <Tab.Screen
+        name="RequisitionNavigator"
+        component={RequisitionNavigator}
+        options={{title: 'Requisitions'}}
+      />
     </Tab.Navigator>
   );
 }

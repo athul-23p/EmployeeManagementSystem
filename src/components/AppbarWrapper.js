@@ -6,7 +6,7 @@ import {AuthKey} from '../constants/storage_keys';
 import {logout} from '../redux/auth/authSlice';
 import {removeData} from '../utils/storage';
 
-function TabScreenWrapper({title, children}) {
+function AppbarWrapper({title, children}) {
   const [showMenu, setShowMenu] = useState(false);
   const dispatch = useDispatch();
   const openMenu = () => setShowMenu(true);
@@ -52,4 +52,4 @@ function TabScreenWrapper({title, children}) {
   );
 }
 
-export default TabScreenWrapper;
+export default AppbarWrapper;

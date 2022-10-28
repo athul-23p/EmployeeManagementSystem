@@ -13,13 +13,14 @@ import * as yup from 'yup';
 import {useForm, Controller} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 
-import TabScreenWrapper from '../../components/TabScreenWrapper';
+import AppbarWrapper from '../../components/AppbarWrapper';
 import globalStyles from './../../styles/globalStyles';
 import {addTechnology, getTechnologies} from '../../services/user.services';
 import {useSelector} from 'react-redux';
 import TechnologyCard from './components/TechnologyCard';
 import Loader from '../../components/Loader';
 import Error from '../../components/Error';
+import ListItems from '../../components/ListItems';
 
 const schema = yup.object().shape({
   technology: yup.string().required('Required'),
@@ -120,15 +121,15 @@ function TechnologiesScreen({navigation}) {
   }, []);
 
   return (
-    <TabScreenWrapper title="Technologies">
+    <AppbarWrapper title="Technologies">
       <View styles={[globalStyles.container]}>
-        <View styles={[styles.searchbarContainer]}>
+        <View styles={[globalStyles.searchBarContainer]}>
           <Searchbar
             placeholder="Search by name"
             onChangeText={setSearchQuery}
             value={searchQuery}
             onSubmitEditing={handleSearch}
-            style={{padding: 5, margin: 10, borderRadius: 29}}
+            style={globalStyles.searchBar}
           />
           <View style={[styles.rowEnd]}>
             <Button onPress={clearAll}>Clear All</Button>
@@ -139,14 +140,10 @@ function TechnologiesScreen({navigation}) {
         ) : isError ? (
           <Error handleError={() => setIsError(false)} />
         ) : (
-          <FlatList
+          <ListItems
             data={technologies}
             renderItem={renderItem}
             keyExtractor={item => item.id}
-            ListEmptyComponent={() => (
-              <Text style={{textAlign: 'center'}}>No results found</Text>
-            )}
-            onEndReachedThreshold={0.4}
             onEndReached={nextPage}
           />
         )}
@@ -184,14 +181,10 @@ function TechnologiesScreen({navigation}) {
         uppercase={false}
         onPress={openModal}
       />
-    </TabScreenWrapper>
+    </AppbarWrapper>
   );
 }
 const styles = StyleSheet.create({
-  searchbarContainer: {
-    marginVertical: 10,
-    borderWidth: 1,
-  },
   rowEnd: {
     marginTop: 5,
     marginBottom: 10,

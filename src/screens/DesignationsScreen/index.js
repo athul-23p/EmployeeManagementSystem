@@ -13,13 +13,14 @@ import * as yup from 'yup';
 import {useForm, Controller} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 
-import TabScreenWrapper from '../../components/TabScreenWrapper';
+import AppbarWrapper from '../../components/AppbarWrapper';
 import globalStyles from './../../styles/globalStyles';
 import {addDesignation, getDesignations} from '../../services/user.services';
 import {useSelector} from 'react-redux';
 import DesignationCard from './components/DesignationCard';
 import Loader from '../../components/Loader';
 import Error from '../../components/Error';
+import ListItems from '../../components/ListItems';
 
 const designationSchema = yup.object().shape({
   designation: yup.string().required('Required'),
@@ -120,7 +121,7 @@ function DesignationsScreen({navigation}) {
   }, []);
 
   return (
-    <TabScreenWrapper title="Designations">
+    <AppbarWrapper title="Designations">
       <View styles={[globalStyles.container]}>
         <View styles={[styles.searchbarContainer]}>
           <Searchbar
@@ -139,14 +140,10 @@ function DesignationsScreen({navigation}) {
         ) : isError ? (
           <Error handleError={() => setIsError(false)} />
         ) : (
-          <FlatList
+          <ListItems
             data={designations}
             renderItem={renderItem}
             keyExtractor={item => item.id}
-            ListEmptyComponent={() => (
-              <Text style={{textAlign: 'center'}}>No results found</Text>
-            )}
-            onEndReachedThreshold={0.4}
             onEndReached={nextPage}
           />
         )}
@@ -184,7 +181,7 @@ function DesignationsScreen({navigation}) {
         uppercase={false}
         onPress={openModal}
       />
-    </TabScreenWrapper>
+    </AppbarWrapper>
   );
 }
 

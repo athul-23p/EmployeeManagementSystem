@@ -13,6 +13,7 @@ const styles = StyleSheet.create({
   },
   textInput: {
     marginVertical: 20,
+    borderColor: 'black',
   },
   center: {
     flex: 1,
@@ -33,6 +34,10 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 15,
   },
+  searchBarContainer: {
+    marginVertical: 10,
+  },
+  searchBar: {padding: 5, borderRadius: 29},
 });
 
 export default styles;

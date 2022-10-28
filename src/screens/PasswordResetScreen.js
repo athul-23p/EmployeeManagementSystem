@@ -43,7 +43,7 @@ function PasswordResetScreen({navigation}) {
       .catch(err => {
         setIsLoading(false);
         setIsError(true);
-        console.log('prs',err);
+        console.log('prs', err);
       });
   };
   if (isLoading) {
@@ -53,7 +53,7 @@ function PasswordResetScreen({navigation}) {
   }
 
   return (
-    <KeyboardAwareScrollView contentContainerStyle={globalStyle.conatiner}>
+    <KeyboardAwareScrollView contentContainerStyle={globalStyle.container}>
       <Text style={[globalStyle.heading, {color: 'black'}]}>
         Reset Password
       </Text>
