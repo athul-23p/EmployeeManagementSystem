@@ -26,14 +26,14 @@ const actions = {
   enableLoading: 'enableLoading',
   setError: 'setError',
   dismissError: 'dismissError',
-  incrementPage:'incrementPage'
+  incrementPage:'incrementPage',
 
 };
 const reducer = (state, {type, payload}) => {
   switch (type) {
-    case 'setSearchQuery':
+    case actions.setSearchQuery:
       return {...state, searchQuery: payload};
-    case 'fetchRequistions':
+    case actions.fetchRequistions:
       const {requisitions, pagination} = payload;
       console.log('rd', payload);
       return {
@@ -42,7 +42,7 @@ const reducer = (state, {type, payload}) => {
         requisitions: [...state.requisitions, ...requisitions],
         isLoading: false,
       };
-    case 'searchRequisitions': {
+    case actions.searchRequisitions: {
       const {requisitions, pagination} = payload;
       return {
         ...state,
@@ -51,11 +51,11 @@ const reducer = (state, {type, payload}) => {
         isLoading: false,
       };
     }
-    case 'enableLoading':
+    case actions.enableLoading:
       return {...state, isLoading: true};
-    case 'setError':
+    case actions.setError:
       return {...state, error: payload, isLoading: false};
-    case 'dismissError':
+    case actions.dismissError:
       return {...state, error: null};
     
     default:
@@ -72,20 +72,28 @@ function RequisitionsScreen({navigation}) {
   const handleSearchInput = text =>
     dispatch({type: actions.setSearchQuery, payload: text});
 
-  const renderItem = ({item}) => (
-    <RequisitionCard token={accessToken} requisition={item} />
-  );
+ 
+  const search = () => {
+     getRequisitions(accessToken, pagination.currentPage, searchQuery)
+       .then(res => {
+         console.log('fr', res);
+         dispatch({type: actions.searchRequisitions, payload: res.data});
+       })
+       .catch(err => {
+         dispatch({type: actions.setError, payload: err});
+       });
+  }
 
+   const renderItem = ({item}) => (
+     <RequisitionCard
+       token={accessToken}
+       requisition={item}
+       requestRefresh={search}
+     />
+   );
   const nextPage = () => {};
   useEffect(() => {
-    getRequisitions(accessToken, pagination.currentPage, searchQuery)
-      .then(res => {
-        console.log('fr', res);
-        dispatch({type: actions.searchRequisitions, payload: res.data});
-      })
-      .catch(err => {
-        dispatch({type: actions.setError, payload: err});
-      });
+    search();
   }, []);
 
   return (
@@ -96,6 +104,7 @@ function RequisitionsScreen({navigation}) {
             placeholder="Search by Title, Heading, Description"
             value={searchQuery}
             onChangeText={handleSearchInput}
+            onSubmitEditing={search}
             style={[globalStyles.searchBar]}
           />
         </View>
