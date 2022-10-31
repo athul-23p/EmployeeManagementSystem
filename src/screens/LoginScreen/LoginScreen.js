@@ -15,6 +15,7 @@ import Loader from '../../components/Loader';
 import Error from '../../components/Error';
 import {getData, storeData} from '../../utils/storage';
 import {AuthKey} from '../../constants/storage_keys';
+import ControllerWrappedInput from '../../components/ControllerWrappedInput';
 
 const userSchema = yup.object().shape({
   email: yup
@@ -85,7 +86,7 @@ function LoginScreen({navigation}) {
     return <Error handleError={() => setIsError(false)} />;
   }
   return (
-    <KeyboardAwareScrollView contentContainerStyle={globalStyle.conatiner}>
+    <KeyboardAwareScrollView contentContainerStyle={globalStyle.container}>
       <Text
         style={[
           globalStyle.heading,
@@ -97,35 +98,22 @@ function LoginScreen({navigation}) {
         <View style={styles.imageContainer}>
           <Icon name="account-circle" color="#6200EE" size={50} />
         </View>
-        <Controller
+        <ControllerWrappedInput
           control={control}
           name="email"
-          render={({field: {onChange, onBlur, value}}) => (
-            <TextInput
-              label={'Email'}
-              value={value}
-              onChangeText={onChange}
-              mode="outlined"
-              style={globalStyle.textInput}
-            />
-          )}
+          label="Email"
+          errors={errors}
+          keyboardType="email-address"
         />
-        {errors.email && <Text>{errors.email.message}</Text>}
-        <Controller
+
+        <ControllerWrappedInput
           control={control}
           name="password"
-          render={({field: {onChange, onBlur, value}}) => (
-            <TextInput
-              label={'Password'}
-              value={value}
-              onChangeText={onChange}
-              mode="outlined"
-              secureTextEntry
-              style={globalStyle.textInput}
-            />
-          )}
+          label="Password"
+          errors={errors}
+          secureTextEntry={true}
         />
-        {errors.password && <Text>{errors.password.message}</Text>}
+
         <Button onPress={handleSubmit(handleLogin)} loading={isLoading}>
           Log in
         </Button>

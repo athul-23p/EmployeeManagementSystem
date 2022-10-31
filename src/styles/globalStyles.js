@@ -5,15 +5,15 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
     backgroundColor: 'white',
-    borderWidth: 1,
+    // borderWidth: 1,
   },
   heading: {
     fontSize: 28,
     fontWeight: '900',
   },
   textInput: {
-    marginVertical: 20,
-    borderColor: 'black',
+    marginVertical: 16,
+    backgroundColor: 'white',
   },
   center: {
     flex: 1,
@@ -38,6 +38,13 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   searchBar: {padding: 5, borderRadius: 29},
+  errroMessage: {
+    color: 'darkred',
+    fontStyle: 'italic',
+  },
+  button: {
+    marginVertical: 5,
+  },
 });
 
 export default styles;

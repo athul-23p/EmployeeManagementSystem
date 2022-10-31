@@ -84,6 +84,7 @@ async function getEmployeesCount(token) {
 }
 
 async function addRequisition(token, data) {
+  console.log('sr', data);
   const res = await axios.post('/requisitions', data, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -125,6 +126,7 @@ async function updateRequisitionById(token, id, data) {
 }
 
 async function deleteRequisitionById(token, id) {
+  
   const res = await axios.delete(`/requisitions/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`,

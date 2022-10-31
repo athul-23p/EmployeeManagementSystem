@@ -1,7 +1,7 @@
 import {useEffect, useReducer, useState} from 'react';
-import {FlatList, View} from 'react-native';
+import {FlatList, ToastAndroid, View} from 'react-native';
 import {FAB, Searchbar} from 'react-native-paper';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import AppbarWrapper from '../../components/AppbarWrapper';
 import {getRequisitions} from '../../services/user.services';
 import globalStyles from './../../styles/globalStyles';
@@ -9,6 +9,7 @@ import RequisitionCard from './components/RequisitionCard';
 import Loader from '../../components/Loader';
 import Error from '../../components/Error';
 import ListItems from '../../components/ListItems';
+import {unsetShouldRefresh} from '../../redux/user/userSlice';
 const initialState = {
   searchQuery: '',
   isLoading: false,
@@ -26,8 +27,7 @@ const actions = {
   enableLoading: 'enableLoading',
   setError: 'setError',
   dismissError: 'dismissError',
-  incrementPage:'incrementPage',
-
+  incrementPage: 'incrementPage',
 };
 const reducer = (state, {type, payload}) => {
   switch (type) {
@@ -57,7 +57,7 @@ const reducer = (state, {type, payload}) => {
       return {...state, error: payload, isLoading: false};
     case actions.dismissError:
       return {...state, error: null};
-    
+
     default:
       return state;
   }
@@ -66,36 +66,63 @@ const reducer = (state, {type, payload}) => {
 function RequisitionsScreen({navigation}) {
   const [{pagination, requisitions, isLoading, error, searchQuery}, dispatch] =
     useReducer(reducer, initialState);
+
   const {accessToken} = useSelector(store => store.auth);
-  console.log(requisitions);
+  const {shouldRefresh} = useSelector(store => store.user);
+
+  const reduxDispatch = useDispatch();
+
+  // console.log(requisitions);
 
   const handleSearchInput = text =>
     dispatch({type: actions.setSearchQuery, payload: text});
 
- 
   const search = () => {
-     getRequisitions(accessToken, pagination.currentPage, searchQuery)
-       .then(res => {
-         console.log('fr', res);
-         dispatch({type: actions.searchRequisitions, payload: res.data});
-       })
-       .catch(err => {
-         dispatch({type: actions.setError, payload: err});
-       });
-  }
+    getRequisitions(accessToken, pagination.currentPage, searchQuery)
+      .then(res => {
+        console.log('fr', res);
+        dispatch({type: actions.searchRequisitions, payload: res.data});
+        if (shouldRefresh) {
+          reduxDispatch(unsetShouldRefresh());
+        }
+      })
+      .catch(err => {
+        dispatch({type: actions.setError, payload: err});
+      });
+  };
 
-   const renderItem = ({item}) => (
-     <RequisitionCard
-       token={accessToken}
-       requisition={item}
-       requestRefresh={search}
-     />
-   );
-  const nextPage = () => {};
+  const renderItem = ({item}) => (
+    <RequisitionCard
+      token={accessToken}
+      requisition={item}
+      requestRefresh={search}
+    />
+  );
+
+  const nextPage = () => {
+    console.log('nP ', pagination);
+    if (pagination.currentPage + 1 > pagination.totalPage) {
+      ToastAndroid.show('End', 1500);
+      return;
+    }
+    getRequisitions(accessToken, pagination.currentPage + 1, searchQuery)
+      .then(res => {
+        dispatch({type: actions.fetchRequistions, payload: res.data});
+      })
+      .catch(err => {
+        dispatch({type: actions.setError, payload: err});
+      });
+  };
+
   useEffect(() => {
     search();
   }, []);
 
+  useEffect(() => {
+    if (shouldRefresh) {
+      search();
+    }
+  }, [shouldRefresh]);
   return (
     <AppbarWrapper title="Requisitions">
       <View style={[globalStyles.container]}>

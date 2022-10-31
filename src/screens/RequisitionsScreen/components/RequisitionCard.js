@@ -8,8 +8,10 @@ import {
   Text,
   Colors,
   ActivityIndicator,
+  Portal,
 } from 'react-native-paper';
-import {deleteDesignationById} from '../../../services/user.services';
+import DeleteDialog from '../../../components/DeleteDialog';
+import {deleteRequisitionById} from '../../../services/user.services';
 
 function RequisitionCard({
   requisition: {title, minExpInMonths, heading, id},
@@ -17,11 +19,16 @@ function RequisitionCard({
   requestRefresh,
 }) {
   const [isLoading, setIsLoading] = useState(false);
+
   const [error, setError] = useState(null);
   const navigation = useNavigation();
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const openDialog = () => setShowDeleteDialog(true);
+  const closeDialog = () => setShowDeleteDialog(false);
+
   const handleDelete = () => {
     setIsLoading(true);
-    deleteDesignationById(token, id)
+    deleteRequisitionById(token, id)
       .then(res => {
         setIsLoading(false);
         requestRefresh();
@@ -49,13 +56,22 @@ function RequisitionCard({
         <Button onPress={() => navigation.navigate('ViewRequisition', {id})}>
           View
         </Button>
-        <Button>Edit</Button>
+        <Button onPress={() => navigation.navigate('UpdateRequisition', {id})}>
+          Edit
+        </Button>
         {isLoading ? (
           <ActivityIndicator />
         ) : (
-          <Button onPress={handleDelete}>Delete</Button>
+          <Button onPress={openDialog}>Delete</Button>
         )}
       </View>
+      <Portal>
+        <DeleteDialog
+          showDeleteDialog={showDeleteDialog}
+          closeDialog={closeDialog}
+          handleDelete={handleDelete}
+        />
+      </Portal>
     </Surface>
   );
 }
