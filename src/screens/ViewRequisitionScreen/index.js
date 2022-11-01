@@ -1,13 +1,16 @@
-import {useEffect, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {useSelector} from 'react-redux';
 import AppbarWrapper from '../../components/AppbarWrapper';
 import {getRequisitionById} from '../../services/user.services';
 import {Text} from 'react-native-paper';
-import {WebView} from 'react-native-webview';
+
 import globalStyles from '../../styles/globalStyles';
+import {RichEditor} from 'react-native-pell-rich-editor';
+
 function ViewRequisitionScreen({navigation, route}) {
   const {accessToken} = useSelector(store => store.auth);
+  const richText = useRef();
   const [content, setContent] = useState('');
 
   const {id} = route.params;
@@ -15,6 +18,7 @@ function ViewRequisitionScreen({navigation, route}) {
     getRequisitionById(accessToken, id)
       .then(res => {
         setContent(res.data.requisition);
+        richText.current.insertHTML(data.description);
       })
       .catch(err => {
         console.log(err);
@@ -26,23 +30,11 @@ function ViewRequisitionScreen({navigation, route}) {
       <View style={[globalStyles.container]}>
         <Text style={[styles.title]}>{content?.title}</Text>
         <Text style={[styles.heading]}>{content?.heading}</Text>
-        <WebView
-          originWhitelist={['*']}
-          source={{
-            html: `
-            <html>
-                <style>
-                    p{
-                        font-size:3rem
-                    }
-                </style>
-                <body>
-                    ${content?.description}
-                </body
-            </html>
-        `,
-          }}
-          style={{}}
+
+        <RichEditor
+          disabled
+          initialContentHTML={content?.description}
+          ref={richText}
         />
       </View>
     </AppbarWrapper>

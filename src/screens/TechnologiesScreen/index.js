@@ -129,7 +129,10 @@ function TechnologiesScreen({navigation}) {
             onChangeText={setSearchQuery}
             value={searchQuery}
             onSubmitEditing={handleSearch}
-            style={globalStyles.searchBar}
+            style={[
+              globalStyles.searchBar,
+              {marginTop: 15, marginHorizontal: 10},
+            ]}
           />
           <View style={[styles.rowEnd]}>
             <Button onPress={clearAll}>Clear All</Button>

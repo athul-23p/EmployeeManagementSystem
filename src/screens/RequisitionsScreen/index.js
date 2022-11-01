@@ -152,6 +152,8 @@ function RequisitionsScreen({navigation}) {
         <FAB
           icon="plus"
           style={globalStyles.fab}
+          label="Add Requisition"
+          uppercase={false}
           onPress={() => navigation.navigate('AddRequisition')}
         />
       </View>

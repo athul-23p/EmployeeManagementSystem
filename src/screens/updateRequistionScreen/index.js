@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {ToastAndroid, View} from 'react-native';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {Headline, Subheading, Text} from 'react-native-paper';
 import {useDispatch, useSelector} from 'react-redux';
 import AppbarWrapper from '../../components/AppbarWrapper';
@@ -18,7 +19,7 @@ function UpdateRequisitionScreen({navigation, route}) {
   const [data, setData] = useState(undefined);
   const {accessToken} = useSelector(store => store.auth);
   const {id} = route.params;
-  console.log(route);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -37,6 +38,7 @@ function UpdateRequisitionScreen({navigation, route}) {
 
   const update = data => {
     setIsLoading(true);
+    console.log('update screen', data);
     updateRequisitionById(accessToken, id, data)
       .then(() => {
         setIsLoading(false);
@@ -51,25 +53,27 @@ function UpdateRequisitionScreen({navigation, route}) {
   };
   return (
     <AppbarWrapper title={'Requistions'}>
-      <View style={globalStyles.container}>
-        <Headline>Edit Requisition</Headline>
-        {isLoading ? (
-          <Loader />
-        ) : error ? (
-          <Error error={error} handleError={() => setError(null)} />
-        ) : (
-          <RichtextEditor
-            defaultValues={{
-              title: data?.title,
-              minExpInMonths: data?.minExpInMonths,
-              heading: data?.heading,
-              description: data?.description,
-            }}
-            buttonLabel="update"
-            onSave={update}
-          />
-        )}
-      </View>
+      <KeyboardAwareScrollView>
+        <View style={globalStyles.container}>
+          <Headline>Edit Requisition</Headline>
+          {isLoading ? (
+            <Loader />
+          ) : error ? (
+            <Error error={error} handleError={() => setError(null)} />
+          ) : (
+            <RichtextEditor
+              defaultValues={{
+                title: data?.title,
+                minExpInMonths: `${data?.minExpInMonths}`,
+                heading: data?.heading,
+                description: data?.description,
+              }}
+              buttonLabel="update"
+              onSave={update}
+            />
+          )}
+        </View>
+      </KeyboardAwareScrollView>
     </AppbarWrapper>
   );
 }

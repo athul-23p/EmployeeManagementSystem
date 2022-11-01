@@ -7,7 +7,7 @@ function Error({error, handleError}) {
   return (
     <View style={globalStyles.center}>
       <View>
-        <Text style={{marginVertical: 10}}>Opps, Something went wrong</Text>
+        <Text style={{marginVertical: 10}}>Oops, Something went wrong</Text>
         <Button mode="contained" onPress={handleError}>
           Retry
         </Button>

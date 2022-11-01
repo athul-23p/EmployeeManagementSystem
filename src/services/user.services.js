@@ -126,7 +126,6 @@ async function updateRequisitionById(token, id, data) {
 }
 
 async function deleteRequisitionById(token, id) {
-  
   const res = await axios.delete(`/requisitions/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`,

@@ -3,6 +3,7 @@ import {StyleSheet} from 'react-native';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    height: '100%',
     padding: 10,
     backgroundColor: 'white',
     // borderWidth: 1,

@@ -33,8 +33,8 @@ function AddRequistionScreen({navigation}) {
       });
   };
   return (
-    <KeyboardAwareScrollView>
-      <AppbarWrapper title="Requisitions">
+    <AppbarWrapper title="Requisitions">
+      <KeyboardAwareScrollView>
         <View style={[globalStyles.container]}>
           <Headline>Add Requisition</Headline>
           {isLoading ? (
@@ -45,7 +45,7 @@ function AddRequistionScreen({navigation}) {
             <RichtextEditor
               defaultValues={{
                 title: '',
-                minExpInMonths: 0,
+                minExpInMonths: '0',
                 heading: '',
               }}
               buttonLabel="Add"
@@ -53,8 +53,8 @@ function AddRequistionScreen({navigation}) {
             />
           )}
         </View>
-      </AppbarWrapper>
-    </KeyboardAwareScrollView>
+      </KeyboardAwareScrollView>
+    </AppbarWrapper>
   );
 }
 

@@ -1,6 +1,6 @@
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {RichEditor, RichToolbar, actions} from 'react-native-pell-rich-editor';
 import {useForm} from 'react-hook-form';
 import ControllerWrappedInput from './ControllerWrappedInput';
@@ -10,7 +10,11 @@ import globalStyles from '../styles/globalStyles';
 
 const schema = yup.object().shape({
   title: yup.string().required('Required'),
-  minExpInMonths: yup.number().required('Required').integer(),
+  minExpInMonths: yup
+    .number()
+    .integer()
+    .required('required')
+    .min(0, 'must be positive'),
   heading: yup.string().required('Required'),
 });
 
@@ -20,24 +24,41 @@ function RichtextEditor({onSave, defaultValues, buttonLabel}) {
     handleSubmit,
     formState: {errors},
     reset,
+    setValue,
   } = useForm({
     defaultValues,
     resolver: yupResolver(schema),
   });
 
   const richText = useRef();
-  const [description, setDescription] = useState(defaultValues.description);
+  const [description, setDescription] = useState(
+    defaultValues?.description || '',
+  );
   const handleDescriptionInput = text => setDescription(text);
   const [editorAttached, setEditorAttached] = useState(false);
   console.log('default values', defaultValues);
+
+  const editorIntializedCallback = useCallback(() => {
+    richText.current.registerToolbar(item => {
+      // console.log('editor initialzed');
+      setEditorAttached(true);
+    });
+  });
+
   const submit = formData => {
-    if (description.length > 0) {
+    console.log(description);
+    if (description && description.length > 0) {
       onSave({...formData, description});
     }
   };
   useEffect(() => {
     reset(defaultValues);
+    setValue('minExpInMonths', defaultValues.minExpInMonths);
+    setDescription(defaultValues.description);
+    // console.log(richText);
   }, [defaultValues]);
+
+  console.log('editor attached', editorAttached);
   return (
     <View style={styles.form}>
       <ControllerWrappedInput
@@ -69,17 +90,12 @@ function RichtextEditor({onSave, defaultValues, buttonLabel}) {
           initialContentHTML={defaultValues.description}
           androidHardwareAccelerationDisabled={true}
           useContainer={true}
-          editorInitializedCallback={() =>
-            richText.current.registerToolbar(function (items) {
-              console.log(items);
-              setEditorAttached(true);
-            })
-          }
+          editorInitializedCallback={editorIntializedCallback}
         />
 
         {editorAttached && (
           <RichToolbar
-            editor={() => richText}
+            editor={richText}
             actions={[
               actions.setBold,
               actions.setItalic,
