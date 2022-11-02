@@ -7,6 +7,7 @@ import TechnologiesScreen from '../screens/TechnologiesScreen';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector} from 'react-redux';
 import RequisitionNavigator from './RequisitionNavigator';
+import EmployeesScreen from '../screens/EmployeesScreen';
 const Tab = createMaterialBottomTabNavigator();
 
 function TabNavigator() {
@@ -23,7 +24,9 @@ function TabNavigator() {
             iconName = 'view-dashboard';
           } else if (route.name == 'Designations') iconName = 'briefcase';
           else if (route.name == 'Technologies') iconName = 'code-tags';
-          else if ((route.name = 'RequisitionNavigator')) iconName = 'domain';
+          else if (route.name == 'RequisitionNavigator') iconName = 'domain';
+          else if (route.name == 'Employees')
+            iconName = 'badge-account-horizontal';
           return <MaterialIcons size={24} name={iconName} color={color} />;
         },
       })}
@@ -49,6 +52,11 @@ function TabNavigator() {
         name="RequisitionNavigator"
         component={RequisitionNavigator}
         options={{title: 'Requisitions'}}
+      />
+      <Tab.Screen
+        name="Employees"
+        component={EmployeesScreen}
+        options={{title: 'Employees'}}
       />
     </Tab.Navigator>
   );

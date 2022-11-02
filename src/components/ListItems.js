@@ -8,7 +8,9 @@ function ListItems({data, renderItem, keyExtractor, onEndReached}) {
       renderItem={renderItem}
       keyExtractor={keyExtractor}
       ListEmptyComponent={() => (
-        <Text style={{textAlign: 'center'}}>No results found</Text>
+        <Text style={{textAlign: 'center', marginVertical: 20}}>
+          No results found
+        </Text>
       )}
       onEndReachedThreshold={0.4}
       onEndReached={onEndReached}

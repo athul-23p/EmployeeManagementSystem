@@ -74,6 +74,71 @@ async function deleteTechnologyById(token, id) {
   return res.data;
 }
 
+async function getEmployees(
+  token,
+  all,
+  page = 1,
+  search,
+  designation,
+  technologies,
+  limit = 10,
+) {
+  const res = await axios.get(`/employees`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    params: {
+      all,
+      page,
+      search,
+      designation,
+      technologies,
+      limit,
+    },
+  });
+  console.log('get employees', res.data);
+  return res.data;
+}
+
+async function getEmployeesById(token, id) {
+  const res = await axios.get(`/employees/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return res.data;
+}
+
+async function addEmployee(token, data) {
+  const res = await axios.post(`/employees`, data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return res.data;
+}
+
+async function updateEmployeesById(token, id, data) {
+  const res = await axios.get(`/employees/${id}`, data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return res.data;
+}
+
+async function deleteEmployeesById(token, id) {
+  const res = await axios.delete(`/employees/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return res.data;
+}
+
 async function getEmployeesCount(token) {
   const res = await axios.get('/employees', {
     headers: {
@@ -205,6 +270,11 @@ export {
   addDesignation,
   updateDesignationById,
   deleteDesignationById,
+  getEmployees,
+  getEmployeesById,
+  addEmployee,
+  updateEmployeesById,
+  deleteEmployeesById,
   getEmployeesCount,
   addRequisition,
   getRequisitions,
