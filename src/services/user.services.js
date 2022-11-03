@@ -4,6 +4,14 @@ import {API_BASE_URL} from '../config/api';
 axios.defaults.baseURL = API_BASE_URL;
 
 // super admin
+async function getAllAdmins(token) {
+  const res = await axios.get(`/users`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return res.data;
+}
 async function getAllAdminsCount(token) {
   const res = await axios.get('/users', {
     headers: {
@@ -111,6 +119,7 @@ async function getEmployeesById(token, id) {
 }
 
 async function addEmployee(token, data) {
+  console.log(data)
   const res = await axios.post(`/employees`, data, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -120,7 +129,8 @@ async function addEmployee(token, data) {
 }
 
 async function updateEmployeesById(token, id, data) {
-  const res = await axios.get(`/employees/${id}`, data, {
+  console.log(data);
+  const res = await axios.patch(`/employees/${id}`, data, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -288,5 +298,6 @@ export {
   updateTechnologyById,
   deleteTechnologyById,
   addTechnology,
+  getAllAdmins,
   getAllAdminsCount,
 };

@@ -46,6 +46,11 @@ const styles = StyleSheet.create({
   button: {
     marginVertical: 5,
   },
+  dropdownContainer: {
+    borderWidth: 0,
+    elevation: 10,
+    zIndex: 12000,
+  },
 });
 
 export default styles;

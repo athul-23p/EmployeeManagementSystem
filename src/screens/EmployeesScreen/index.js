@@ -1,11 +1,12 @@
 import React, {useEffect, useReducer, useState} from 'react';
 import {View, StyleSheet, ToastAndroid} from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
-import {FAB, Searchbar, Switch, Text} from 'react-native-paper';
+import {Button, FAB, Portal, Searchbar, Switch, Text} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import AppbarWrapper from '../../components/AppbarWrapper';
 import ListItems from '../../components/ListItems';
 import {
+  addEmployee,
   getDesignations,
   getDesignationsCount,
   getEmployees,
@@ -14,6 +15,9 @@ import {
 } from '../../services/user.services';
 import globalStyles from '../../styles/globalStyles';
 import EmployeeCard from './components/EmployeeCard';
+import Loader from '../../components/Loader';
+import Error from '../../components/Error';
+import FormModal from './components/FormModal';
 
 const badgeDotColors = [
   '#e76f51',
@@ -31,6 +35,7 @@ const actions = {
   setTechnologiesItems: 'setTechnologiesItems',
   setTechnologyValues: 'setTechnologyValues',
   setError: 'setError',
+  dismissError: 'dismissError',
   setSearchQuery: 'setSearchQuery',
   toggleDesignationsDropDown: 'toggleDesignationsDropDown',
   toggleTechnologiesDropDown: 'toggleTechnologiesDropDown',
@@ -99,7 +104,8 @@ const reducer = (state, {type, payload}) => {
       };
     case actions.setError:
       return {...state, isLoading: false, error: payload};
-
+    case actions.dismissError:
+      return {...state, error: null};
     case actions.setLoading:
       return {...state, isLoading: true};
     case actions.setSearchQuery:
@@ -132,12 +138,13 @@ function EmployeesScreen() {
   const [technologyValues, setTechnologyValues] = useState([]);
 
   const [showAllEmployees, setShowAllEmployees] = useState(true);
-  
+  const [showAddEmployeeModal, setShowAddEmployeeModal] = useState(false);
+
   const {accessToken} = useSelector(store => store.auth);
-  
+
   const toggleShowAllEmployees = () => setShowAllEmployees(prev => !prev);
-  
-  
+  const openAddEmployeeModal = () => setShowAddEmployeeModal(true);
+  const closeAddEmployeeModal = () => setShowAddEmployeeModal(false);
 
   const onError = error => dispatch({type: actions.setError, payload: error});
   const fetchDesignations = async () => {
@@ -198,17 +205,7 @@ function EmployeesScreen() {
       dispatch({type: actions.setError, payload: error});
     }
   };
-  // const setDesignationValue = value => {
-  //   let [val] = value();
-  //   console.log('sdvalue', value);
-  //   dispatch({type: actions.setDesignationValue, payload: val});
-  // };
 
-  // const setTechnologyValues = value => {
-  //   console.log('set tech value', value());
-  //   let val = value();
-  //   // dispatch({type: actions.setTechnologyValues, payload: val});
-  // };
   const renderItem = ({item}) => (
     <EmployeeCard
       employee={item}
@@ -227,9 +224,19 @@ function EmployeesScreen() {
     ToastAndroid.show('End reached', 1500);
   };
 
+  const clearAll = () => {
+    setDesignationValue('');
+    setTechnologyValues([]);
+    dispatch({type: actions.setSearchQuery, payload: ''});
+  };
+
+  const handleAddEmployee = async employee => {
+    let data = await addEmployee(accessToken, employee);
+    return data;
+  };
   const refresh = () => {
     dispatch({type: actions.setLoading});
-    fetchDesignations(undefined, actions.searchEmployees);
+    fetchEmployees(undefined, actions.searchEmployees);
   };
 
   useEffect(() => {
@@ -244,16 +251,6 @@ function EmployeesScreen() {
   return (
     <AppbarWrapper title="Employees">
       <View style={[globalStyles.container]}>
-        <View style={[styles.flexRowEnd]}>
-          <Text style={[styles.flexItem, {color: 'grey'}]}>
-            Show all employees
-          </Text>
-          <Switch
-            onValueChange={toggleShowAllEmployees}
-            value={showAllEmployees}
-            style={[styles.flexItem]}
-          />
-        </View>
         <View style={[globalStyles.searchBarContainer]}>
           <Searchbar
             placeholder="Search by name or email"
@@ -262,6 +259,7 @@ function EmployeesScreen() {
               dispatch({type: actions.setSearchQuery, payload: text})
             }
             onSubmitEditing={() => fetchEmployees(1, actions.searchEmployees)}
+            value={searchQuery}
           />
         </View>
         <View style={[styles.row, {zIndex: 9991}]}>
@@ -274,7 +272,8 @@ function EmployeesScreen() {
             setOpen={() => dispatch({type: actions.toggleDesignationsDropDown})}
             setValue={setDesignationValue}
             setItems={fetchDesignations}
-            containerStyle={styles.dropdownContainer}
+            containerStyle={styles.dropdown}
+            dropDownContainerStyle={styles.dropdownContainer}
           />
           <DropDownPicker
             loading={dropdownLoading}
@@ -289,24 +288,61 @@ function EmployeesScreen() {
             setOpen={() => dispatch({type: actions.toggleTechnologiesDropDown})}
             setItems={fetchTechnologies}
             setValue={setTechnologyValues}
-            containerStyle={styles.dropdownContainer}
+            containerStyle={styles.dropdown}
             badgeDotColors={badgeDotColors}
+            dropDownContainerStyle={styles.dropdownContainer}
           />
         </View>
-        <View style={{marginVertical: 5}}>
-          <ListItems
-            data={employees}
-            renderItem={renderItem}
-            keyExtractor={item => item.id}
-            onEndReached={nextPage}
-          />
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}>
+          <Button onPress={clearAll}>Clear all</Button>
+          <View style={[styles.flexRowEnd]}>
+            <Text style={[styles.flexItem, {color: 'grey'}]}>
+              Show all employees
+            </Text>
+            <Switch
+              onValueChange={toggleShowAllEmployees}
+              value={showAllEmployees}
+              style={[styles.flexItem]}
+            />
+          </View>
+        </View>
+        <View style={{marginVertical: 5, flex: 1}}>
+          {isLoading ? (
+            <Loader />
+          ) : error ? (
+            <Error handleError={() => dispatch({type: actions.dismissError})} />
+          ) : (
+            <ListItems
+              data={employees}
+              renderItem={renderItem}
+              keyExtractor={item => item.id}
+              onEndReached={nextPage}
+            />
+          )}
         </View>
         <FAB
           style={[globalStyles.fab]}
           label="Add Employee"
           icon="plus"
           uppercase={false}
+          onPress={openAddEmployeeModal}
         />
+        <Portal>
+          <FormModal
+            visible={showAddEmployeeModal}
+            hideModal={closeAddEmployeeModal}
+            title="Add Employee"
+            buttonLabel="Submit"
+            token={accessToken}
+            onSave={handleAddEmployee}
+            refresh={refresh}
+          />
+        </Portal>
       </View>
     </AppbarWrapper>
   );
@@ -327,8 +363,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  dropdownContainer: {
+  dropdown: {
     width: '47%',
+  },
+  dropdownContainer: {
+    borderWidth: 0,
+    elevation: 10,
+    zIndex: 6000,
+    backgroundColor: '#eeeeff',
   },
 });
 export default EmployeesScreen;

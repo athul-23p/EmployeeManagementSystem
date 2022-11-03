@@ -10,6 +10,7 @@ const ControllerWrappedInput = ({
   errors,
   keyboardType,
   secureTextEntry,
+  disabled
 }) => {
   return (
     <View>
@@ -26,6 +27,7 @@ const ControllerWrappedInput = ({
             outlineColor="lightgrey"
             keyboardType={keyboardType || 'default'}
             secureTextEntry={secureTextEntry}
+            disabled={disabled}
           />
         )}
       />
