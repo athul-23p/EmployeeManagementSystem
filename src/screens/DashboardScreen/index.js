@@ -21,6 +21,7 @@ function DashBoardScreen({navigation}) {
     'employees',
     'requisitions',
   ];
+
   const [counts, setCounts] = useState({
     designations: 0,
     technologies: 0,

@@ -191,6 +191,8 @@ function FormModal({
     setShowDesignationsDropDown(false);
     setShowReportsToDropDown(false);
   }, [designationValue, reportsToValue]);
+
+  console.log('Technology dropdown', showTechnologiesDropDown);
   return (
     <Modal
       visible={visible}
@@ -269,7 +271,13 @@ function FormModal({
             }}
             dropDownDirection="BOTTOM"
             dropDownContainerStyle={styles.dropdownContainer}
-            onClose={() => console.log('dd closed')}
+            // onOpen,onClose probably executes after visible prop is changed and before next re-render
+            // onClose={() =>
+            //   console.log('dd closed , isVisible', showTechnologiesDropDown)
+            // }
+            // onOpen={() =>
+            //   console.log('dd opened , isVisible', showTechnologiesDropDown)
+            // }
           />
           <Text style={styles.label}>Reports to</Text>
           <DropDownPicker
@@ -329,6 +337,7 @@ const styles = StyleSheet.create({
     color: 'gray',
     fontSize: 12,
     marginTop: 20,
+    zIndex: 0,
   },
 });
 export default FormModal;

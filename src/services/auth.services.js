@@ -9,6 +9,7 @@ function login(user) {
 }
 
 function updateUser(token, update) {
+  cl
   return axios.post('/users/self', update, {
     headers: {
       Authorization: `Bearer ${token}`,

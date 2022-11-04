@@ -17,8 +17,9 @@ function ViewRequisitionScreen({navigation, route}) {
   useEffect(() => {
     getRequisitionById(accessToken, id)
       .then(res => {
-        setContent(res.data.requisition);
-        richText.current.insertHTML(data.description);
+        console.log('vreq', res);
+        setContent(res?.data?.requisition);
+        richText.current.insertHTML(res?.data?.description);
       })
       .catch(err => {
         console.log(err);

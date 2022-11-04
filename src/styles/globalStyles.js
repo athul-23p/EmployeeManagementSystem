@@ -51,6 +51,10 @@ const styles = StyleSheet.create({
     elevation: 10,
     zIndex: 12000,
   },
+  content: {
+    flex: 1,
+    marginVertical: 10,
+  },
 });
 
 export default styles;

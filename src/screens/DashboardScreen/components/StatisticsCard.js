@@ -1,10 +1,17 @@
+import {useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {View, StyleSheet, Pressable} from 'react-native';
 import {Text} from 'react-native-paper';
 
 function StatisticsCard({route, title, stats}) {
+  const navigation = useNavigation();
+  const navigate = () => navigation.navigate(route);
   return (
-    <Pressable style={[styles.container]} android_ripple={{color: 'lightgray'}}>
+    <Pressable
+      style={[styles.container]}
+      android_ripple={{color: 'lightgray'}}
+      // onPress={navigate}
+    >
       <View>
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.stats}>{stats}</Text>

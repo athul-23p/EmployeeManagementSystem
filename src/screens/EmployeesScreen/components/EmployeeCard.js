@@ -13,6 +13,7 @@ import {
   deleteEmployeesById,
   updateEmployeesById,
 } from '../../../services/user.services';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FormModal from './FormModal';
 
 function EmployeeCard({token, employee, refreshData, handleError}) {
@@ -51,8 +52,14 @@ function EmployeeCard({token, employee, refreshData, handleError}) {
           <Text style={[styles.name]}>{name}</Text>
           <Text>{designation?.name}</Text>
           <View style={[styles.contactInfo]}>
-            <Text>{email}</Text>
-            <Text>{phoneNumber}</Text>
+            <View style={styles.row}>
+              <Icon name="email" style={{marginRight: 10}} size={14} />
+              <Text>{email}</Text>
+            </View>
+            <View style={styles.row}>
+              <Icon name="cellphone" style={{marginRight: 10}} size={14} />
+              <Text>{phoneNumber}</Text>
+            </View>
           </View>
           <View style={[styles.techonologies]}>
             {technologies.map(tech => (
@@ -108,7 +115,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   designation: {},
-  contactInfo: {marginVertical: 4},
+  contactInfo: {marginVertical: 8},
   techonologies: {
     marginVertical: 4,
     justifyContent: 'flex-start',
@@ -119,6 +126,10 @@ const styles = StyleSheet.create({
   actions: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 });
 export default EmployeeCard;

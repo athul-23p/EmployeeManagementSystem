@@ -107,12 +107,12 @@ function TechnologiesScreen({navigation}) {
     }
   };
 
-  const clearAll = () => {
-    if (searchQuery) {
-      setSearchQuery('');
-      handleSearch();
-    }
-  };
+  // const clearAll = () => {
+  //   if (searchQuery) {
+  //     setSearchQuery('');
+  //     handleSearch();
+  //   }
+  // };
   const renderItem = ({item}) => (
     <TechnologyCard item={item} token={accessToken} refresh={refreshData} />
   );
@@ -134,22 +134,24 @@ function TechnologiesScreen({navigation}) {
               {marginTop: 15, marginHorizontal: 10},
             ]}
           />
-          <View style={[styles.rowEnd]}>
+          {/* <View style={[styles.rowEnd]}>
             <Button onPress={clearAll}>Clear All</Button>
-          </View>
+          </View> */}
         </View>
-        {isLoading ? (
-          <Loader />
-        ) : isError ? (
-          <Error handleError={() => setIsError(false)} />
-        ) : (
-          <ListItems
-            data={technologies}
-            renderItem={renderItem}
-            keyExtractor={item => item.id}
-            onEndReached={nextPage}
-          />
-        )}
+        <View style={{minHeight: 200}}>
+          {isLoading ? (
+            <Loader />
+          ) : isError ? (
+            <Error handleError={() => setIsError(false)} />
+          ) : (
+            <ListItems
+              data={technologies}
+              renderItem={renderItem}
+              keyExtractor={item => item.id}
+              onEndReached={nextPage}
+            />
+          )}
+        </View>
       </View>
       <Portal>
         {/* Technology modal */}

@@ -4,14 +4,49 @@ import {API_BASE_URL} from '../config/api';
 axios.defaults.baseURL = API_BASE_URL;
 
 // super admin
-async function getAllAdmins(token) {
+async function getAllAdmins(token, page = 1, search, limit = 15) {
   const res = await axios.get(`/users`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    params: {
+      page,
+      limit,
+      search,
+    },
+  });
+  return res.data;
+}
+
+async function addAdmin(token, data) {
+  const res = await axios.post('/users', data, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
   return res.data;
 }
+
+async function updateAdminById(token, id, update) {
+  console.log(update, id);
+  const res = await axios.put(`/users/${id}`, update, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return res.data;
+}
+
+async function deleteAdminById(token, id) {
+  console.log('dABId', id, token);
+  const res = await axios.delete(`/users/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return res.data;
+}
+
 async function getAllAdminsCount(token) {
   const res = await axios.get('/users', {
     headers: {
@@ -119,7 +154,7 @@ async function getEmployeesById(token, id) {
 }
 
 async function addEmployee(token, data) {
-  console.log(data)
+  console.log(data);
   const res = await axios.post(`/employees`, data, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -299,5 +334,8 @@ export {
   deleteTechnologyById,
   addTechnology,
   getAllAdmins,
+  addAdmin,
+  updateAdminById,
+  deleteAdminById,
   getAllAdminsCount,
 };

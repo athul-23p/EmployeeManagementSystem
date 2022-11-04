@@ -8,6 +8,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector} from 'react-redux';
 import RequisitionNavigator from './RequisitionNavigator';
 import EmployeesScreen from '../screens/EmployeesScreen';
+import UsersScreen from '../screens/UsersScreen';
 const Tab = createMaterialBottomTabNavigator();
 
 function TabNavigator() {
@@ -27,6 +28,7 @@ function TabNavigator() {
           else if (route.name == 'RequisitionNavigator') iconName = 'domain';
           else if (route.name == 'Employees')
             iconName = 'badge-account-horizontal';
+          else if (route.name == 'Users') iconName = 'account-group';
           return <MaterialIcons size={24} name={iconName} color={color} />;
         },
       })}
@@ -38,6 +40,13 @@ function TabNavigator() {
         component={DashBoardScreen}
         options={{title: 'Dashboard'}}
       />
+      {user.role === 'SUPER_ADMIN' && (
+        <Tab.Screen
+          name="Users"
+          component={UsersScreen}
+          options={{title: 'Users'}}
+        />
+      )}
       <Tab.Screen
         name="Designations"
         component={DesignationsScreen}

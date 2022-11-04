@@ -36,7 +36,7 @@ function RichtextEditor({onSave, defaultValues, buttonLabel}) {
   );
   const handleDescriptionInput = text => setDescription(text);
   const [editorAttached, setEditorAttached] = useState(false);
-  console.log('default values', defaultValues);
+  // console.log('default values', defaultValues);
 
   const editorIntializedCallback = useCallback(() => {
     richText.current.registerToolbar(item => {
@@ -58,7 +58,7 @@ function RichtextEditor({onSave, defaultValues, buttonLabel}) {
     // console.log(richText);
   }, [defaultValues]);
 
-  console.log('editor attached', editorAttached);
+  // console.log('editor attached', editorAttached);
   return (
     <View style={styles.form}>
       <ControllerWrappedInput
@@ -87,7 +87,7 @@ function RichtextEditor({onSave, defaultValues, buttonLabel}) {
           onChange={handleDescriptionInput}
           style={{borderWidth: 1, height: 60, borderColor: 'lightgrey'}}
           initialHeight={200}
-          initialContentHTML={defaultValues.description}
+          initialContentHTML={defaultValues.description || ''}
           androidHardwareAccelerationDisabled={true}
           useContainer={true}
           editorInitializedCallback={editorIntializedCallback}

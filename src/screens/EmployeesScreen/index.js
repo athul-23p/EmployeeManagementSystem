@@ -245,9 +245,10 @@ function EmployeesScreen() {
   }, []);
 
   useEffect(() => {
+    dispatch({type: actions.setLoading});
     fetchEmployees(undefined, actions.searchEmployees);
   }, [designationValue, technologyValues, showAllEmployees]);
-
+  console.log('tech dd', openTechnologies);
   return (
     <AppbarWrapper title="Employees">
       <View style={[globalStyles.container]}>
