@@ -6,10 +6,11 @@ import * as yup from 'yup';
 import {Button, TextInput} from 'react-native-paper';
 import {View, StyleSheet, Text, ToastAndroid} from 'react-native';
 import globalStyle from './../styles/globalStyles';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import Loader from '../components/Loader';
 import Error from '../components/Error';
 import {updateUser} from '../services/auth.services';
+import {updateUserData} from '../redux/auth/authSlice';
 
 const passwordSchema = yup.object().shape({
   password: yup.string().required('this field is required').min(8),
@@ -29,15 +30,21 @@ function PasswordResetScreen({navigation}) {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
 
-  const {user, token} = useSelector(store => store.auth);
+  const {user, accessToken} = useSelector(store => store.auth);
+  const dispatch = useDispatch();
 
   const handlePasswordUpdate = update => {
     setIsLoading(true);
-    updateUser(token, update)
+    updateUser(accessToken, update)
       .then(res => {
-        console.log(res);
+        // console.log(res.data.updatedUser);
         setIsLoading(false);
         ToastAndroid.show('Password updated', 1500);
+        let dateString = new Date().toLocaleDateString();
+        dispatch(
+          // updateUserData({...user, generatedPasswordChangeDate: dateString})
+          updateUserData(res.data.updatedUser),
+        );
         navigation.navigate('Dashboard');
       })
       .catch(err => {

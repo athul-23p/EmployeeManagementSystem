@@ -59,7 +59,7 @@ function UserModal({
     <Modal
       visible={visible}
       onDismiss={onDismiss}
-      style={[globalStyles.modal, {maxHeight: 480}]}>
+      contentContainerStyle={[globalStyles.modal, {maxHeight: 480}]}>
       <Headline>{title}</Headline>
       <ControllerWrappedInput
         control={control}

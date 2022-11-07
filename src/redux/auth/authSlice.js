@@ -14,8 +14,8 @@ export const authSlice = createSlice({
       // console.log('dispatchd login', action);
       return {...state, ...action.payload};
     },
-    updatePassword: (state, action) => {
-      console.log(action);
+    updateUserData: (state, action) => {
+      return {...state, user: action.payload};
     },
     logout: (state, action) => {
       return initialState;
@@ -23,5 +23,5 @@ export const authSlice = createSlice({
   },
 });
 
-export const {login, updatePassword, logout} = authSlice.actions;
+export const {login, updateUserData, logout} = authSlice.actions;
 export default authSlice.reducer;

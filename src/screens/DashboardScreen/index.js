@@ -14,14 +14,20 @@ import StatisticsCard from './components/StatisticsCard';
 
 function DashBoardScreen({navigation}) {
   const {user, accessToken} = useSelector(store => store.auth);
+  // const Cards = [
+  //   'users',
+  //   'designations',
+  //   'technologies',
+  //   'employees',
+  //   'requisitions',
+  // ];
   const Cards = [
-    'users',
-    'designations',
-    'technologies',
-    'employees',
-    'requisitions',
+    {title: 'users', route: 'Users'},
+    {title: 'designations', route: 'Designations'},
+    {title: 'technologies', route: 'Technologies'},
+    {title: 'employees', route: 'Employees'},
+    {title: 'requisitions', route: 'Requistions'},
   ];
-
   const [counts, setCounts] = useState({
     designations: 0,
     technologies: 0,
@@ -55,11 +61,12 @@ function DashBoardScreen({navigation}) {
       {/* <Text>dashboard</Text> */}
       <View style={{width: '100%', alignItems: 'center'}}>
         <ScrollView contentContainerStyle={[styles.cardsContainer]}>
-          {Cards.map(title => (
+          {Cards.map(({title, route}) => (
             <StatisticsCard
               title={title}
               stats={counts[title]}
               key={Math.random().toString()}
+              route={route}
             />
           ))}
         </ScrollView>

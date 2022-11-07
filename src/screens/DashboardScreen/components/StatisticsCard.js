@@ -10,8 +10,7 @@ function StatisticsCard({route, title, stats}) {
     <Pressable
       style={[styles.container]}
       android_ripple={{color: 'lightgray'}}
-      // onPress={navigate}
-    >
+      onPress={navigate}>
       <View>
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.stats}>{stats}</Text>

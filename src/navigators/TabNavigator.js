@@ -9,6 +9,7 @@ import {useSelector} from 'react-redux';
 import RequisitionNavigator from './RequisitionNavigator';
 import EmployeesScreen from '../screens/EmployeesScreen';
 import UsersScreen from '../screens/UsersScreen';
+import {ROLES} from '../constants/roles';
 const Tab = createMaterialBottomTabNavigator();
 
 function TabNavigator() {
@@ -34,7 +35,13 @@ function TabNavigator() {
       })}
       shifting={true}
       activeColor="white"
-      barStyle={{backgroundColor: '#6200EE'}}>
+      barStyle={{backgroundColor: '#6200EE'}}
+      initialRouteName={
+        user?.role !== ROLES.SUPER_ADMIN &&
+        user?.generatedPasswordChangeDate === null
+          ? 'PasswordReset'
+          : 'Dashboard'
+      }>
       <Tab.Screen
         name="Dashboard"
         component={DashBoardScreen}

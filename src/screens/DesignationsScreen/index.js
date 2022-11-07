@@ -123,13 +123,17 @@ function DesignationsScreen({navigation}) {
   return (
     <AppbarWrapper title="Designations">
       <View styles={[globalStyles.container]}>
-        <View styles={[styles.searchbarContainer]}>
+        <View styles={[globalStyles.searchBarContainer]}>
           <Searchbar
             placeholder="Search by name"
             onChangeText={setSearchQuery}
             value={searchQuery}
             onSubmitEditing={handleSearch}
-            style={{padding: 5, margin: 10, borderRadius: 29}}
+            style={[
+              globalStyles.searchBar,
+              // {borderWidth:1},
+              {marginVertical: 25, marginHorizontal: 10},
+            ]}
           />
           {/* <View style={[styles.rowEnd]}>
             <Button onPress={clearAll}>Clear All</Button>

@@ -131,7 +131,7 @@ function TechnologiesScreen({navigation}) {
             onSubmitEditing={handleSearch}
             style={[
               globalStyles.searchBar,
-              {marginTop: 15, marginHorizontal: 10},
+              {marginVertical: 25, marginHorizontal: 10},
             ]}
           />
           {/* <View style={[styles.rowEnd]}>

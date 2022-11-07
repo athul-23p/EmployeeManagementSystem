@@ -123,8 +123,6 @@ function EmployeesScreen() {
       searchQuery,
       pagination,
       employees,
-      // designationValue,
-      // technologyValues,
       openDesignations,
       openTechnologies,
       dropdownLoading,
@@ -248,7 +246,7 @@ function EmployeesScreen() {
     dispatch({type: actions.setLoading});
     fetchEmployees(undefined, actions.searchEmployees);
   }, [designationValue, technologyValues, showAllEmployees]);
-  console.log('tech dd', openTechnologies);
+  // console.log('tech dd', openTechnologies);
   return (
     <AppbarWrapper title="Employees">
       <View style={[globalStyles.container]}>

@@ -10,7 +10,7 @@ import {
   updateAdminById,
 } from '../../../services/user.services';
 import globalStyles from '../../../styles/globalStyles';
-import UserModal from './UserModal';
+// import UserModal from './UserModal';
 
 const SIZE = 20;
 const COLOR = 'darkorchid';
@@ -20,13 +20,13 @@ function UserCard({user, token, requestRefresh}) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
+  // const [showEditModal, setShowEditModal] = useState(false);
 
   const openDeleteDialog = () => setShowDeleteDialog(true);
   const closeDeleteDialog = () => setShowDeleteDialog(false);
 
-  const openEditModal = () => setShowEditModal(true);
-  const closeEditModal = () => setShowEditModal(false);
+  // const openEditModal = () => setShowEditModal(true);
+  // const closeEditModal = () => setShowEditModal(false);
 
   const deleteUser = async () => {
     try {
@@ -42,7 +42,6 @@ function UserCard({user, token, requestRefresh}) {
       setError(error);
     }
   };
-
 
   return (
     <View style={[styles.container]}>
@@ -70,7 +69,7 @@ function UserCard({user, token, requestRefresh}) {
         <Error error={error} handleError={() => setError(null)} />
       ) : (
         <View style={[styles.actions]}>
-          <Button  disabled>Edit</Button>
+          <Button disabled>Edit</Button>
           <Button onPress={openDeleteDialog}>Delete</Button>
         </View>
       )}
@@ -81,7 +80,7 @@ function UserCard({user, token, requestRefresh}) {
           handleDelete={deleteUser}
           closeDialog={closeDeleteDialog}
         />
-        <UserModal
+        {/* <UserModal
           visible={showEditModal}
           onDismiss={closeEditModal}
           buttonLabel="Update"
@@ -90,7 +89,7 @@ function UserCard({user, token, requestRefresh}) {
           requestRefresh={requestRefresh}
           user={user}
           onSave={updateUser}
-        />
+        /> */}
       </Portal>
     </View>
   );

@@ -84,19 +84,16 @@ function FormModal({
     useState(false);
   const [showReportsToDropDown, setShowReportsToDropDown] = useState(false);
 
-  const openDesignationsDropDown = () => {
-    setShowDesignationsDropDown(true);
+  const onDesignationsDropDownOpen = () => {
     if (showTechnologiesDropDown) setshowTechnologiesDropDown(false);
     if (showReportsToDropDown) setShowReportsToDropDown(false);
   };
-  const openTechnologiesDropDown = () => {
-    setshowTechnologiesDropDown(true);
+  const onTechnologiesDropDownOpen = () => {
     if (showDesignationsDropDown) setShowDesignationsDropDown(false);
     if (showReportsToDropDown) setShowReportsToDropDown(false);
   };
 
-  const openReportsToDropDown = () => {
-    setShowReportsToDropDown(true);
+  const onReportsToDropDownOpen = () => {
     if (showDesignationsDropDown) setShowDesignationsDropDown(false);
     if (showTechnologiesDropDown) setshowTechnologiesDropDown(false);
   };
@@ -153,13 +150,13 @@ function FormModal({
       setError(error);
     }
   };
-  const handleClick = () => {
-    console.log('rtdd clicked', showReportsToDropDown);
-    if (showReportsToDropDown) {
-      setShowReportsToDropDown(false);
-    }
-    console.log('after', showReportsToDropDown);
-  };
+  // const handleClick = () => {
+  //   console.log('rtdd clicked', showReportsToDropDown);
+  //   if (showReportsToDropDown) {
+  //     setShowReportsToDropDown(false);
+  //   }
+  //   console.log('after', showReportsToDropDown);
+  // };
   const handleSave = data => {
     setIsLoading(true);
     onSave({
@@ -232,7 +229,7 @@ function FormModal({
           <DropDownPicker
             placeholder="Designation"
             open={showDesignationsDropDown}
-            setOpen={openDesignationsDropDown}
+            setOpen={setShowDesignationsDropDown}
             value={designationValue}
             items={designationItems}
             setValue={setDesignationValue}
@@ -244,20 +241,16 @@ function FormModal({
               nestedScrollEnabled: true,
             }}
             dropDownDirection="BOTTOM"
+            onOpen={onDesignationsDropDownOpen}
             closeAfterSelecting
             closeOnBackPressed
-            onChangeValue={() => {
-              if (showDesignationsDropDown) {
-                console.log('desig changed');
-              }
-            }}
           />
           <Text style={styles.label}>Technologies</Text>
           <DropDownPicker
             placeholder="Technologies"
             multiple
             open={showTechnologiesDropDown}
-            setOpen={openTechnologiesDropDown}
+            setOpen={setshowTechnologiesDropDown}
             value={technologyValues}
             items={techonologyItems}
             setValue={setTechnologyValues}
@@ -271,19 +264,13 @@ function FormModal({
             }}
             dropDownDirection="BOTTOM"
             dropDownContainerStyle={styles.dropdownContainer}
-            // onOpen,onClose probably executes after visible prop is changed and before next re-render
-            // onClose={() =>
-            //   console.log('dd closed , isVisible', showTechnologiesDropDown)
-            // }
-            // onOpen={() =>
-            //   console.log('dd opened , isVisible', showTechnologiesDropDown)
-            // }
+            onOpen={onTechnologiesDropDownOpen}
           />
           <Text style={styles.label}>Reports to</Text>
           <DropDownPicker
             placeholder="Reports to"
             open={showReportsToDropDown}
-            setOpen={openReportsToDropDown}
+            setOpen={setShowReportsToDropDown}
             value={reportsToValue}
             items={reportsToItems}
             setValue={setReportsToValue}
@@ -299,7 +286,7 @@ function FormModal({
               styles.dropdownContainer,
               {maxHeight: 100},
             ]}
-            onPress={handleClick}
+            onOpen={onReportsToDropDownOpen}
             closeAfterSelecting
           />
         </View>

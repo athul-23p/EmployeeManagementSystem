@@ -154,6 +154,7 @@ function UsersScreen(props) {
           buttonLabel="Submit"
           onSave={addUser}
           requestRefresh={refresh}
+          successMsg="Added User"
         />
       </Portal>
     </AppbarWrapper>

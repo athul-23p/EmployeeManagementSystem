@@ -12,6 +12,7 @@ const schema = yup.object().shape({
   title: yup.string().required('Required'),
   minExpInMonths: yup
     .number()
+    .typeError('Must be a number')
     .integer()
     .required('required')
     .min(0, 'must be positive'),
