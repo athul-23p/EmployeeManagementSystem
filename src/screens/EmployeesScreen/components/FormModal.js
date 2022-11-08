@@ -224,8 +224,8 @@ function FormModal({
           mode="outlined"
           editable={false}
         />
-        <Text style={styles.label}>Designation</Text>
-        <View style={{zIndex: 9999}}>
+        <View>
+          <Text style={styles.label}>Designation</Text>
           <DropDownPicker
             placeholder="Designation"
             open={showDesignationsDropDown}

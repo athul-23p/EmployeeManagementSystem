@@ -26,7 +26,7 @@ function DashBoardScreen({navigation}) {
     {title: 'designations', route: 'Designations'},
     {title: 'technologies', route: 'Technologies'},
     {title: 'employees', route: 'Employees'},
-    {title: 'requisitions', route: 'Requistions'},
+    {title: 'requisitions', route: 'RequisitionNavigator'},
   ];
   const [counts, setCounts] = useState({
     designations: 0,

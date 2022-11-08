@@ -11,9 +11,36 @@ import Loader from '../components/Loader';
 import Error from '../components/Error';
 import {updateUser} from '../services/auth.services';
 import {updateUserData} from '../redux/auth/authSlice';
+import ControllerWrappedInput from '../components/ControllerWrappedInput';
+import {storeData} from '../utils/storage';
+import {AuthKey} from '../constants/storage_keys';
 
 const passwordSchema = yup.object().shape({
-  password: yup.string().required('this field is required').min(8),
+  password: yup
+    .string()
+    .required('Required field')
+    .test({
+      name: 'isStrong',
+      test(value, ctx) {
+        if (!/[a-z]{2,}/.test(value))
+          return ctx.createError({
+            message: 'Must contain atleast 2 lowercase characters',
+          });
+        if (!/[A-Z]{2,}/.test(value))
+          return ctx.createError({
+            message: 'Must contain atleast 2 uppercase characters',
+          });
+        if (!/\d{2,}/.test(value))
+          return ctx.createError({
+            message: 'Must contain atleast 2 digits',
+          });
+        if (!/[!@#$%^&*(),.?":{}|<>]{2,}/.test(value))
+          return ctx.createError({
+            message: 'Must contain atleast 2 special characters',
+          });
+        return true;
+      },
+    }),
 });
 
 function PasswordResetScreen({navigation}) {
@@ -37,14 +64,14 @@ function PasswordResetScreen({navigation}) {
     setIsLoading(true);
     updateUser(accessToken, update)
       .then(res => {
-        // console.log(res.data.updatedUser);
         setIsLoading(false);
         ToastAndroid.show('Password updated', 1500);
-        let dateString = new Date().toLocaleDateString();
-        dispatch(
-          // updateUserData({...user, generatedPasswordChangeDate: dateString})
-          updateUserData(res.data.updatedUser),
-        );
+        let user = res.data.data.updatedUser;
+        storeData(AuthKey, user)
+          .then(() => {
+            dispatch(updateUserData(user));
+          })
+          .catch(err => console.log(err));
         navigation.navigate('Dashboard');
       })
       .catch(err => {
@@ -67,29 +94,25 @@ function PasswordResetScreen({navigation}) {
       <Text style={{marginVertical: 10, color: 'black'}}>
         Reset generated password
       </Text>
-      <View style={styles.profile}>
-        <Text style={styles.letterImage}>{user.name[0]}</Text>
-        <Text style={styles.email}>{user.email}</Text>
+      <View style={{margin: 10, flex: 0.8, justifyContent: 'center'}}>
+        <View style={styles.profile}>
+          <Text style={styles.letterImage}>{user.name[0]}</Text>
+          <Text style={styles.email}>{user.email}</Text>
+        </View>
+        <ControllerWrappedInput
+          control={control}
+          name="password"
+          secureTextEntry={true}
+          errors={errors}
+          label="New Password"
+        />
+
+        <Button
+          style={{marginVertical: 15}}
+          onPress={handleSubmit(handlePasswordUpdate)}>
+          Update
+        </Button>
       </View>
-      <Controller
-        control={control}
-        name="password"
-        render={({field: {onChange, onBlur, value}}) => (
-          <TextInput
-            onChangeText={onChange}
-            value={value}
-            mode="outlined"
-            secureTextEntry
-            label={'Password'}
-          />
-        )}
-      />
-      {errors.password && <Text>{errors.password.message}</Text>}
-      <Button
-        style={{marginVertical: 15}}
-        onPress={handleSubmit(handlePasswordUpdate)}>
-        Update
-      </Button>
     </KeyboardAwareScrollView>
   );
 }

@@ -28,14 +28,27 @@ function ViewRequisitionScreen({navigation, route}) {
   console.log(content?.description);
   return (
     <AppbarWrapper title="Requisitions">
-      <View style={[globalStyles.container]}>
-        <Text style={[styles.title]}>{content?.title}</Text>
-        <Text style={[styles.heading]}>{content?.heading}</Text>
+      <View
+        style={[
+          globalStyles.container,
+          {justifyContent: 'flex-start', flex: 2},
+        ]}>
+        <View style={{marginTop: 10}}>
+          <Text style={[styles.title]}>{content?.title}</Text>
+          <Text style={[styles.heading]}>{content?.heading}</Text>
+        </View>
 
         <RichEditor
           disabled
           initialContentHTML={content?.description}
           ref={richText}
+          style={{flex: 8}}
+          containerStyle={{
+            marginTop: 10,
+            paddingVertical: 10,
+            flex: 8,
+            // borderWidth: 1,
+          }}
         />
       </View>
     </AppbarWrapper>
@@ -44,9 +57,11 @@ function ViewRequisitionScreen({navigation, route}) {
 const styles = StyleSheet.create({
   title: {
     fontSize: 16,
+    marginLeft: 10,
   },
   heading: {
     fontSize: 28,
+    marginLeft: 10,
   },
 });
 export default ViewRequisitionScreen;

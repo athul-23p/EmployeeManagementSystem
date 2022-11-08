@@ -32,8 +32,30 @@ const schema = yup.object({}).shape(
       otherwise: schema => schema.nullable(),
     }),
     password: yup.string().when('password', {
-      is: true,
-      then: schema => schema.length(8),
+      is: val => val !== '',
+      then: schema =>
+        schema.test({
+          name: 'isStrong',
+          test(value, ctx) {
+            if (!/[a-z]{2,}/.test(value))
+              return ctx.createError({
+                message: 'Must contain atleast 2 lowercase characters',
+              });
+            if (!/[A-Z]{2,}/.test(value))
+              return ctx.createError({
+                message: 'Must contain atleast 2 uppercase characters',
+              });
+            if (!/\d{2,}/.test(value))
+              return ctx.createError({
+                message: 'Must contain atleast 2 digits',
+              });
+            if (!/[!@#$%^&*(),.?":{}|<>]{2,}/.test(value))
+              return ctx.createError({
+                message: 'Must contain atleast 2 special characters',
+              });
+            return true;
+          },
+        }),
       otherwise: schema => schema.nullable(),
     }),
   },

@@ -174,6 +174,16 @@ async function updateEmployeesById(token, id, data) {
   return res.data;
 }
 
+async function uploadEmployeeCV(token, id, formData) {
+  const res = await axios.post(`/employees/cv/${id}`, formData, {
+    headers: {
+      Authorization: `Beared ${token}`,
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  return res.data;
+}
+
 async function deleteEmployeesById(token, id) {
   const res = await axios.delete(`/employees/${id}`, {
     headers: {
@@ -318,6 +328,7 @@ export {
   getEmployees,
   getEmployeesById,
   addEmployee,
+  uploadEmployeeCV,
   updateEmployeesById,
   deleteEmployeesById,
   getEmployeesCount,

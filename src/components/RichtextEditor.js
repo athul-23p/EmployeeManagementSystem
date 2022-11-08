@@ -19,7 +19,7 @@ const schema = yup.object().shape({
   heading: yup.string().required('Required'),
 });
 
-function RichtextEditor({onSave, defaultValues, buttonLabel}) {
+function RichtextEditor({onSave, defaultValues, buttonLabel,style}) {
   const {
     control,
     handleSubmit,

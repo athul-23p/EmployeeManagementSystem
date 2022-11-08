@@ -6,6 +6,7 @@ import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import ControllerWrappedInput from '../../../components/ControllerWrappedInput';
 import {ToastAndroid, View, Text} from 'react-native';
+import Loader from '../../../components/Loader';
 
 const schema = yup.object().shape({
   name: yup.string().required('Required'),
@@ -82,7 +83,7 @@ function UserModal({
         keyboardType="number-pad"
       />
       {isLoading ? (
-        <ActivityIndicator />
+        <Loader size={'small'} style={{justifyContent: 'center'}} />
       ) : error ? (
         <View style={{alignItems: 'center'}}>
           <Text style={globalStyles.errroMessage}>Something went wrong</Text>
