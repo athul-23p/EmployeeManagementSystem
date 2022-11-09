@@ -189,7 +189,7 @@ function FormModal({
     setShowReportsToDropDown(false);
   }, [designationValue, reportsToValue]);
 
-  console.log('Technology dropdown', showTechnologiesDropDown);
+  // console.log('Technology dropdown', showTechnologiesDropDown);
   return (
     <Modal
       visible={visible}

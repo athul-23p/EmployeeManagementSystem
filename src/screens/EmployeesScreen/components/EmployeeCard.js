@@ -13,11 +13,13 @@ import DeleteDialog from '../../../components/DeleteDialog';
 import {
   deleteEmployeesById,
   updateEmployeesById,
+  uploadEmployeeCV,
 } from '../../../services/user.services';
-// import DocumentPicker, {
-//   isInProgress,
-//   types,
-// } from 'react-native-document-picker';
+import DocumentPicker, {
+  isInProgress,
+  types,
+} from 'react-native-document-picker';
+
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FormModal from './FormModal';
 
@@ -28,6 +30,15 @@ function EmployeeCard({token, employee, refreshData, handleError}) {
   const [isLoading, setIsLoading] = useState(false);
   const [file, setFile] = useState(null);
 
+  /**
+   * file:{
+   *    uri:content://URI,
+   *    fileCopyUri:// points to local copy of picked file ,
+   *    type: MIME type,
+   *    name: display name of the file,
+   *    size
+   * }
+   */
   const [showEditModal, setShowEditModal] = useState(false);
   const openEditModal = () => setShowEditModal(true);
   const closeEditModal = () => setShowEditModal(false);
@@ -52,22 +63,32 @@ function EmployeeCard({token, employee, refreshData, handleError}) {
     return data;
   };
 
-  // const handleUpload = async () => {
-  //   console.log('upload clicked');
-  //   try {
-  //     const result = await DocumentPicker.pick({
-  //       allowMultiSelection: false,
-  //       type: [types.pdf, types.doc],
-  //     });
-  //     setFile(result);
-  //     let data = new FormData();
-  //     data.append('cv', result);
-  //     let res = updateEmployeesById(token, id, data);
-  //     console.log(res);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+  const handleUpload = async () => {
+    console.log('upload clicked');
+    try {
+      // pick the file
+      const result = await DocumentPicker.pick({
+        allowMultiSelection: false,
+        type: [types.pdf, types.doc],
+      });
+      console.log(result);
+      setFile(result[0]);
+
+      // create formData
+      let data = new FormData();
+      data.append('cv', result);
+
+      // setIsLoading(true);
+      console.log(data);
+      let res = await uploadEmployeeCV(token, id, data);
+      // ToastAndroid.show('CV uploaded', 1500);
+      // setIsLoading(false);
+      console.log(file);
+      console.log(result);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <View style={[styles.container]}>
@@ -95,8 +116,12 @@ function EmployeeCard({token, employee, refreshData, handleError}) {
         </View>
       </View>
       <View style={[styles.actions]}>
-        <Button onPress={() => console.log('ld')}>Upload CV</Button>
-        <Button onPress={openEditModal}>Edit</Button>
+        <Button onPress={handleUpload} disabled={isLoading}>
+          Upload CV
+        </Button>
+        <Button onPress={openEditModal} disabled={isLoading}>
+          Edit
+        </Button>
         {isLoading ? (
           <ActivityIndicator />
         ) : (

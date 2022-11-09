@@ -6070,6 +6070,13 @@
   "resolved" "https://registry.npmjs.org/react-native-config/-/react-native-config-1.4.11.tgz"
   "version" "1.4.11"
 
+"react-native-document-picker@^8.1.2":
+  "integrity" "sha512-R126YsjTXBuvigRRExyAQ+yn1UGV4dGcMI9x4UAY8TBTSOt6nOQcWS/AQcbzjk9MnN8ISDGqNq9GmN51Q1aHjA=="
+  "resolved" "https://registry.npmjs.org/react-native-document-picker/-/react-native-document-picker-8.1.2.tgz"
+  "version" "8.1.2"
+  dependencies:
+    "invariant" "^2.2.4"
+
 "react-native-dropdown-picker@^5.4.2":
   "integrity" "sha512-cZBPyN+k52jA9XguFnKoF5tLf31z6gjZ8GijO/pfVNSSEtPwZ14UTUrr87JiiOnMh5K/O2kRzZ/jZN8D0MmUMA=="
   "resolved" "https://registry.npmjs.org/react-native-dropdown-picker/-/react-native-dropdown-picker-5.4.2.tgz"

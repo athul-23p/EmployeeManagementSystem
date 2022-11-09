@@ -177,11 +177,13 @@ async function updateEmployeesById(token, id, data) {
 async function uploadEmployeeCV(token, id, formData) {
   const res = await axios.post(`/employees/cv/${id}`, formData, {
     headers: {
-      Authorization: `Beared ${token}`,
-      'Content-Type': 'multipart/form-data',
+      Authorization: `Bearer ${token}`,
+      // 'Content-Type': `multipart/form-data; boundary=${formData.getBoundary()}`,
     },
   });
   return res.data;
+
+  
 }
 
 async function deleteEmployeesById(token, id) {
