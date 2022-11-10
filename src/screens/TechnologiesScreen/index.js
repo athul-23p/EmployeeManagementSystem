@@ -59,7 +59,7 @@ function TechnologiesScreen({navigation}) {
         closeModal();
         ToastAndroid.show(`Added ${res.data.name} to technologies`, 1500);
         setTechnologies([]);
-        fetchData();
+        fetchTechnologies();
       })
       .catch(err => {
         console.log(err);
@@ -70,10 +70,10 @@ function TechnologiesScreen({navigation}) {
   const handleSearch = () => {
     setTechnologies([]);
     setPage(0);
-    fetchData();
+    fetchTechnologies();
   };
 
-  const fetchData = () => {
+  const fetchTechnologies = () => {
     setIsLoading(true);
     getTechnologies(accessToken, page, searchQuery)
       .then(res => {
@@ -95,29 +95,24 @@ function TechnologiesScreen({navigation}) {
   const refreshData = () => {
     setTechnologies([]);
     setPage(0);
-    fetchData();
+    fetchTechnologies();
   };
 
   const nextPage = () => {
     if (page < pagination?.totalPage - 1) {
       setPage(page => page + 1);
-      fetchData();
+      fetchTechnologies();
     } else {
       ToastAndroid.show('End of list', 1500);
     }
   };
 
-  // const clearAll = () => {
-  //   if (searchQuery) {
-  //     setSearchQuery('');
-  //     handleSearch();
-  //   }
-  // };
+
   const renderItem = ({item}) => (
     <TechnologyCard item={item} token={accessToken} refresh={refreshData} />
   );
   useEffect(() => {
-    fetchData();
+    fetchTechnologies();
   }, []);
 
   return (

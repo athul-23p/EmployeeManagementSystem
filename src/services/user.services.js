@@ -28,7 +28,7 @@ async function addAdmin(token, data) {
 }
 
 async function updateAdminById(token, id, update) {
-  console.log(update, id);
+  // console.log(update, id);
   const res = await axios.put(`/users/${id}`, update, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -38,7 +38,7 @@ async function updateAdminById(token, id, update) {
 }
 
 async function deleteAdminById(token, id) {
-  console.log('dABId', id, token);
+  // console.log('dABId', id, token);
   const res = await axios.delete(`/users/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -175,17 +175,25 @@ async function updateEmployeesById(token, id, data) {
 }
 
 async function uploadEmployeeCV(token, id, formData) {
+  console.log('formData', formData);
   const res = await axios.post(`/employees/cv/${id}`, formData, {
     headers: {
       Authorization: `Bearer ${token}`,
-      // 'Content-Type': `multipart/form-data; boundary=${formData.getBoundary()}`,
+      'Content-Type': `multipart/form-data`,
     },
   });
   return res.data;
-
-  
 }
 
+async function downloadEmployeeCV(token,id){
+  const res = await axios.get(`/employees/cv/${id}`,{
+    headers:{
+      Authorization:`Bearer ${token}`
+    }
+  });
+
+  return res.data;
+}
 async function deleteEmployeesById(token, id) {
   const res = await axios.delete(`/employees/${id}`, {
     headers: {

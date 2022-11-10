@@ -135,7 +135,7 @@ function EmployeesScreen() {
   const [designationValue, setDesignationValue] = useState(null);
   const [technologyValues, setTechnologyValues] = useState([]);
 
-  const [showAllEmployees, setShowAllEmployees] = useState(true);
+  const [showAllEmployees, setShowAllEmployees] = useState(false);
   const [showAddEmployeeModal, setShowAddEmployeeModal] = useState(false);
 
   const {accessToken} = useSelector(store => store.auth);

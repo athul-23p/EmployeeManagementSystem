@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {useForm, Controller} from 'react-hook-form';
+import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import {Button, Text, TextInput} from 'react-native-paper';
+import {Button, Text} from 'react-native-paper';
 import {StyleSheet, ToastAndroid, View} from 'react-native';
 import globalStyle from '../../styles/globalStyles';
 import {useDispatch} from 'react-redux';
@@ -25,7 +25,6 @@ const userSchema = yup.object().shape({
   password: yup.string().required('Password is required'),
 });
 function LoginScreen({navigation}) {
-  // console.log('URL', API_BASE_URL, Config.REACT_APP_BASE_URL);
   const {
     control,
     handleSubmit,
@@ -38,37 +37,42 @@ function LoginScreen({navigation}) {
     resolver: yupResolver(userSchema),
   });
   const [isLoading, setIsLoading] = useState(true);
-  const [isError, setIsError] = useState(false);
+  const [error, setError] = useState(null);
   const dispatch = useDispatch();
-  const handleLogin = data => {
+  const handleLogin = async data => {
     // console.log('log in', data);
     setIsLoading(true);
+    try {
+      let res = await userLogin(data);
+      const {token, user} = res.data.data;
+      const payload = {
+        user,
+        accessToken: token.access_token,
+        isAuthenticated: true,
+      };
+      await storeData(AuthKey, payload);
+      dispatch(login(payload));
+      ToastAndroid.show('Log in successfull', 2000);
 
-    userLogin(data)
-      .then(res => {
-        // console.log(res.data);
-        setIsLoading(false);
-        const {token, user} = res.data.data;
-        const payload = {
-          user,
-          accessToken: token.access_token,
-          isAuthenticated: true,
-        };
-        // console.log(payload);
-        storeData(AuthKey, payload)
-          .then(() => dispatch(login(payload)))
-          .catch(err => console.log(err));
+      setIsLoading(false);
+    } catch (error) {
+      const {
+        response: {status, data},
+      } = error;
+      console.log(error);
 
-        ToastAndroid.show('Log in successfull', 2000);
-      })
-      .catch(err => {
-        console.log(err);
-        setIsError(true);
-        setIsLoading(false);
-      });
+      console.log('err', status, data);
+      if (status === 400) {
+        setError(data);
+      } else {
+        setError({message: 'Something went wrong'});
+      }
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
+    // load auth data from async storage
     getData(AuthKey)
       .then(val => {
         if (val !== null) dispatch(login(val));
@@ -77,13 +81,14 @@ function LoginScreen({navigation}) {
       .catch(err => {
         console.log(err);
         setIsLoading(false);
-        setIsError(true);
+        setError({message: 'Error : Async storage get failed'});
       });
   }, []);
+
   if (isLoading) {
     return <Loader />;
-  } else if (isError) {
-    return <Error handleError={() => setIsError(false)} />;
+  } else if (error) {
+    return <Error error={error} handleError={() => setError(null)} />;
   }
   return (
     <KeyboardAwareScrollView contentContainerStyle={globalStyle.container}>

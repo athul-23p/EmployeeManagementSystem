@@ -80,6 +80,7 @@ const styles = StyleSheet.create({
     elevation: 2,
     padding: 10,
     marginVertical: 5,
+    marginHorizontal: 2,
     backgroundColor: 'white',
     borderBottomColor: 10,
     borderRadius: 20,

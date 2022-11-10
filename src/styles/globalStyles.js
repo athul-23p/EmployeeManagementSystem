@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
   searchBarContainer: {
     marginVertical: 10,
   },
-  searchBar: {padding: 5, borderRadius: 29},
+  searchBar: {padding: 2, borderRadius: 29},
   errroMessage: {
     color: 'darkred',
     fontStyle: 'italic',
