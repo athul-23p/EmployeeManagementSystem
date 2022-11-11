@@ -16,19 +16,21 @@ import {yupResolver} from '@hookform/resolvers/yup';
 import AppbarWrapper from '../../components/AppbarWrapper';
 import globalStyles from './../../styles/globalStyles';
 import {addTechnology, getTechnologies} from '../../services/user.services';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import TechnologyCard from './components/TechnologyCard';
 import Loader from '../../components/Loader';
 import Error from '../../components/Error';
 import ListItems from '../../components/ListItems';
+import {setUpdateDashboard} from '../../redux/user/userSlice';
 
 const schema = yup.object().shape({
   technology: yup.string().required('Required'),
 });
 
+const firstPage = 0;
 function TechnologiesScreen({navigation}) {
   const [searchQuery, setSearchQuery] = useState('');
-  const [page, setPage] = useState(0);
+
   const [pagination, setPagination] = useState({});
   const [technologies, setTechnologies] = useState([]);
 
@@ -37,6 +39,7 @@ function TechnologiesScreen({navigation}) {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
 
+  const dispatch = useDispatch();
   const {accessToken} = useSelector(store => store.auth);
   const {
     control,
@@ -58,8 +61,8 @@ function TechnologiesScreen({navigation}) {
         setIsLoading(false);
         closeModal();
         ToastAndroid.show(`Added ${res.data.name} to technologies`, 1500);
-        setTechnologies([]);
-        fetchTechnologies();
+        fetchTechnologies(firstPage, true);
+        dispatch(setUpdateDashboard());
       })
       .catch(err => {
         console.log(err);
@@ -68,21 +71,23 @@ function TechnologiesScreen({navigation}) {
   };
 
   const handleSearch = () => {
-    setTechnologies([]);
-    setPage(0);
-    fetchTechnologies();
+    fetchTechnologies(firstPage, true);
   };
 
-  const fetchTechnologies = () => {
+  const fetchTechnologies = (_page = 0, clearPrevData = false) => {
     setIsLoading(true);
-    getTechnologies(accessToken, page, searchQuery)
+    getTechnologies(accessToken, _page, searchQuery)
       .then(res => {
         setIsLoading(false);
         console.log(res);
         let {pagination, technologies} = res.data;
         console.log(technologies);
         setPagination(pagination);
-        setTechnologies(prev => [...prev, ...technologies]);
+        if (clearPrevData) {
+          setTechnologies(technologies);
+        } else {
+          setTechnologies(prev => [...prev, ...technologies]);
+        }
         // console.log(res);
       })
       .catch(err => {
@@ -93,41 +98,35 @@ function TechnologiesScreen({navigation}) {
   };
 
   const refreshData = () => {
-    setTechnologies([]);
-    setPage(0);
-    fetchTechnologies();
+    fetchTechnologies(firstPage, true);
   };
 
   const nextPage = () => {
-    if (page < pagination?.totalPage - 1) {
-      setPage(page => page + 1);
-      fetchTechnologies();
+    if (pagination.curretPage < pagination?.totalPage - 1) {
+      fetchTechnologies(pagination.curretPage + 1);
     } else {
       ToastAndroid.show('End of list', 1500);
     }
   };
 
-
   const renderItem = ({item}) => (
     <TechnologyCard item={item} token={accessToken} refresh={refreshData} />
   );
   useEffect(() => {
-    fetchTechnologies();
+    fetchTechnologies(firstPage);
   }, []);
 
   return (
     <AppbarWrapper title="Technologies">
-      <View styles={[globalStyles.container]}>
-        <View styles={[globalStyles.searchBarContainer]}>
+      <View style={[globalStyles.container]}>
+        <View style={[globalStyles.searchBarContainer]}>
           <Searchbar
             placeholder="Search by name"
             onChangeText={setSearchQuery}
             value={searchQuery}
             onSubmitEditing={handleSearch}
-            style={[
-              globalStyles.searchBar,
-              {marginVertical: 25, marginHorizontal: 10},
-            ]}
+            style={[globalStyles.searchBar]}
+            inputStyle={[globalStyles.searchBarInput]}
           />
           {/* <View style={[styles.rowEnd]}>
             <Button onPress={clearAll}>Clear All</Button>

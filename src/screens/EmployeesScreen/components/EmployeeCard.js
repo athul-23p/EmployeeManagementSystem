@@ -24,6 +24,8 @@ import RNFetchBlob from 'rn-fetch-blob';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FormModal from './FormModal';
 import Config from 'react-native-config';
+import {useDispatch} from 'react-redux';
+import {setUpdateDashboard} from '../../../redux/user/userSlice';
 
 function EmployeeCard({token, employee, refreshData, handleError}) {
   const {name, email, phoneNumber, designation, technologies, id, cv} =
@@ -32,7 +34,7 @@ function EmployeeCard({token, employee, refreshData, handleError}) {
   const [showDeleteDialog, setShowDialog] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [file, setFile] = useState(null);
-
+  const dispatch = useDispatch();
   /**
    * file:{
    *    uri:content://URI,
@@ -54,6 +56,7 @@ function EmployeeCard({token, employee, refreshData, handleError}) {
       let data = await deleteEmployeesById(token, id);
       setIsLoading(false);
       ToastAndroid.show('Employee details deleted', 1500);
+      dispatch(setUpdateDashboard());
       refreshData();
     } catch (error) {
       console.log(error);

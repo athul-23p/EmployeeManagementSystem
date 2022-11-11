@@ -1,11 +1,20 @@
 import {StyleSheet} from 'react-native';
-
+const support = StyleSheet.create({
+  redBorder: {
+    borderWidth: 4,
+    borderColor: 'red',
+  },
+  blueBorder: {
+    borderWidth: 1,
+    borderColor: 'darkblue',
+  },
+});
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     height: '100%',
     padding: 10,
-    backgroundColor: 'white',
+
     // borderWidth: 1,
   },
   heading: {
@@ -42,6 +51,9 @@ const styles = StyleSheet.create({
   errroMessage: {
     color: 'darkred',
     fontStyle: 'italic',
+  },
+  searchBarInput: {
+    fontSize: 16,
   },
   button: {
     marginVertical: 5,

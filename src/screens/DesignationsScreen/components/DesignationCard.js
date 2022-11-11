@@ -19,6 +19,8 @@ import {
 } from '../../../services/user.services';
 import globalStyles from '../../../styles/globalStyles';
 import DeleteDialog from '../../../components/DeleteDialog';
+import {useDispatch} from 'react-redux';
+import {setUpdateDashboard} from '../../../redux/user/userSlice';
 const schema = yup.object().shape({
   designation: yup.string().required('Required'),
 });
@@ -30,6 +32,8 @@ function DesignationCard({item, token, refresh}) {
   const closeEditModal = () => setShowEditModal(false);
   const openDialog = () => setShowDeleteDialog(true);
   const closeDialog = () => setShowDeleteDialog(false);
+  const dispatch = useDispatch();
+
   const {
     control,
     handleSubmit,
@@ -65,6 +69,7 @@ function DesignationCard({item, token, refresh}) {
         ToastAndroid.show('Delete Successfull', 1000);
         setIsLoading(false);
         closeDialog();
+        dispatch(setUpdateDashboard());
         refresh();
       })
       .catch(err => {

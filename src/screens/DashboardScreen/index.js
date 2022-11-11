@@ -1,8 +1,9 @@
 import {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, ScrollView} from 'react-native';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import AppbarWrapper from '../../components/AppbarWrapper';
 import {ROLES} from '../../constants/roles';
+import {unsetUpdateDashboard} from '../../redux/user/userSlice';
 import {
   getAllAdminsCount,
   getDesignationsCount,
@@ -14,13 +15,8 @@ import StatisticsCard from './components/StatisticsCard';
 
 function DashBoardScreen({navigation}) {
   const {user, accessToken} = useSelector(store => store.auth);
-  // const Cards = [
-  //   'users',
-  //   'designations',
-  //   'technologies',
-  //   'employees',
-  //   'requisitions',
-  // ];
+  const {updateDashboard} = useSelector(store => store.user);
+  const dispatch = useDispatch();
   const Cards = [
     {title: 'users', route: 'Users'},
     {title: 'designations', route: 'Designations'},
@@ -38,29 +34,35 @@ function DashBoardScreen({navigation}) {
   if (user?.role != ROLES.SUPER_ADMIN) {
     Cards.shift();
   }
-  useEffect(() => {
-    async function getStats() {
-      let stats = {...counts};
-      try {
-        stats.designations = await getDesignationsCount(accessToken);
-        stats.employees = await getEmployeesCount(accessToken);
-        stats.requisitions = await getRequisitionsCount(accessToken);
-        stats.technologies = await getTechnologiesCount(accessToken);
-        if (user?.role == ROLES.SUPER_ADMIN) {
-          stats.users = await getAllAdminsCount(accessToken);
-        }
-        setCounts(stats);
-      } catch (error) {
-        console.log(error);
+
+  const getStats = async () => {
+    let stats = {...counts};
+    try {
+      stats.designations = await getDesignationsCount(accessToken);
+      stats.employees = await getEmployeesCount(accessToken);
+      stats.requisitions = await getRequisitionsCount(accessToken);
+      stats.technologies = await getTechnologiesCount(accessToken);
+      if (user?.role == ROLES.SUPER_ADMIN) {
+        stats.users = await getAllAdminsCount(accessToken);
       }
+      setCounts(stats);
+    } catch (error) {
+      console.log(error);
     }
-    getStats();
-  }, []);
+  };
+  useEffect(() => {
+    if (updateDashboard) {
+      getStats();
+      dispatch(unsetUpdateDashboard());
+    }
+  }, [updateDashboard]);
+
   return (
     <AppbarWrapper title={'Dashboard'}>
-      {/* <Text>dashboard</Text> */}
       <View style={{width: '100%', alignItems: 'center'}}>
-        <ScrollView contentContainerStyle={[styles.cardsContainer]}>
+        <ScrollView
+          contentContainerStyle={[styles.cardsContainer]}
+          style={{height: '92%'}}>
           {Cards.map(({title, route}) => (
             <StatisticsCard
               title={title}
@@ -80,11 +82,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     // justifyContent: 'center',
-    paddingBottom: 10,
-    height: '100%',
+    paddingBottom: 20,
     width: '99%',
-    // borderWidth: 1,
-    // flex: 1,
   },
 });
 export default DashBoardScreen;

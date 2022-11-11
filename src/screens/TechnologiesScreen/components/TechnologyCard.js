@@ -19,6 +19,8 @@ import {
 } from '../../../services/user.services';
 import globalStyles from '../../../styles/globalStyles';
 import DeleteDialog from '../../../components/DeleteDialog';
+import {useDispatch} from 'react-redux';
+import {setUpdateDashboard} from '../../../redux/user/userSlice';
 const schema = yup.object().shape({
   technology: yup.string().required('Required'),
 });
@@ -26,6 +28,7 @@ function TechnologyCard({item, token, refresh}) {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
   const openEditModal = () => setShowEditModal(true);
   const closeEditModal = () => setShowEditModal(false);
   const openDialog = () => setShowDeleteDialog(true);
@@ -66,6 +69,7 @@ function TechnologyCard({item, token, refresh}) {
         ToastAndroid.show('Delete Successfull', 1000);
         setIsLoading(false);
         closeDialog();
+        dispatch(setUpdateDashboard());
         refresh();
       })
       .catch(err => {

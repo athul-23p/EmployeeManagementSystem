@@ -74,6 +74,7 @@ function UsersScreen(props) {
   const openModal = () => dispatch({type: actions.openModal});
   const closeModal = () => dispatch({type: actions.closeModal});
   const loading = () => dispatch({type: actions.setIsLoading});
+
   const fetchUsers = async (page, action) => {
     try {
       loading();
@@ -115,12 +116,15 @@ function UsersScreen(props) {
   return (
     <AppbarWrapper title="Users">
       <View style={[globalStyles.container]}>
-        <Searchbar
-          placeholder="Search by name or email"
-          style={[globalStyles.searchBar]}
-          onChangeText={handleInput}
-          onSubmitEditing={() => fetchUsers(1, actions.searchUsers)}
-        />
+        <View style={[globalStyles.searchBarContainer]}>
+          <Searchbar
+            placeholder="Search by name or email"
+            style={[globalStyles.searchBar]}
+            onChangeText={handleInput}
+            onSubmitEditing={() => fetchUsers(1, actions.searchUsers)}
+            inputStyle={[globalStyles.searchBarInput]}
+          />
+        </View>
         <View style={{minHeight: 200}}>
           {isLoading ? (
             <Loader />

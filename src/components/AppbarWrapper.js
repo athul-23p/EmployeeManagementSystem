@@ -49,7 +49,7 @@ const schema = yup.object({}).shape(
               return ctx.createError({
                 message: 'Must contain atleast 2 digits',
               });
-            if (!/[!@#$%^&*(),.?":{}|<>]{2,}/.test(value))
+            if (!/[!@#$%^&*(),.?":{}|<>\[\]]{2,}/.test(value))
               return ctx.createError({
                 message: 'Must contain atleast 2 special characters',
               });
@@ -127,7 +127,11 @@ function AppbarWrapper({title, children}) {
     }
   };
   return (
-    <View style={{flex: 1, backgroundColor: 'white'}}>
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: 'white',
+      }}>
       <StatusBar backgroundColor={'#6200EE'} barStyle="light-content" />
       <Appbar.Header>
         <Appbar.Content title={title} />

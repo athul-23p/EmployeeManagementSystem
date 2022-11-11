@@ -16,11 +16,12 @@ import {yupResolver} from '@hookform/resolvers/yup';
 import AppbarWrapper from '../../components/AppbarWrapper';
 import globalStyles from './../../styles/globalStyles';
 import {addDesignation, getDesignations} from '../../services/user.services';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import DesignationCard from './components/DesignationCard';
 import Loader from '../../components/Loader';
 import Error from '../../components/Error';
 import ListItems from '../../components/ListItems';
+import {setUpdateDashboard} from '../../redux/user/userSlice';
 
 const designationSchema = yup.object().shape({
   designation: yup.string().required('Required'),
@@ -38,6 +39,8 @@ function DesignationsScreen({navigation}) {
   const [isError, setIsError] = useState(false);
 
   const {accessToken} = useSelector(store => store.auth);
+  const dispatch = useDispatch();
+
   const {
     control,
     handleSubmit,
@@ -59,8 +62,8 @@ function DesignationsScreen({navigation}) {
         setIsLoading(false);
         closeModal();
         ToastAndroid.show(`Added ${res.data.name} to Designations`, 1500);
-        setDesignations([]);
-        fetchData();
+        dispatch(setUpdateDashboard());
+        fetchData(true);
       })
       .catch(err => {
         console.log(err);
@@ -69,12 +72,11 @@ function DesignationsScreen({navigation}) {
   };
 
   const handleSearch = () => {
-    setDesignations([]);
     setPage(0);
-    fetchData();
+    fetchData(true);
   };
 
-  const fetchData = () => {
+  const fetchData = (clearData = false) => {
     setIsLoading(true);
     getDesignations(accessToken, page, searchQuery)
       .then(res => {
@@ -82,7 +84,11 @@ function DesignationsScreen({navigation}) {
         let {pagination, designations} = res.data;
 
         setPagination(pagination);
-        setDesignations(prev => [...prev, ...designations]);
+        if (clearData) {
+          setDesignations(designations);
+        } else {
+          setDesignations(prev => [...prev, ...designations]);
+        }
         // console.log(res);
       })
       .catch(err => {
@@ -93,9 +99,8 @@ function DesignationsScreen({navigation}) {
   };
 
   const refreshData = () => {
-    setDesignations([]);
     setPage(0);
-    fetchData();
+    fetchData(true);
   };
 
   const nextPage = () => {
@@ -107,12 +112,6 @@ function DesignationsScreen({navigation}) {
     }
   };
 
-  // const clearAll = () => {
-  //   if (searchQuery) {
-  //     setSearchQuery('');
-  //     handleSearch();
-  //   }
-  // };
   const renderItem = ({item}) => (
     <DesignationCard item={item} token={accessToken} refresh={refreshData} />
   );
@@ -122,18 +121,15 @@ function DesignationsScreen({navigation}) {
 
   return (
     <AppbarWrapper title="Designations">
-      <View styles={[globalStyles.container]}>
-        <View styles={[globalStyles.searchBarContainer]}>
+      <View style={[globalStyles.container]}>
+        <View style={[globalStyles.searchBarContainer]}>
           <Searchbar
             placeholder="Search by name"
             onChangeText={setSearchQuery}
             value={searchQuery}
             onSubmitEditing={handleSearch}
-            style={[
-              globalStyles.searchBar,
-              // {borderWidth:1},
-              {marginVertical: 25, marginHorizontal: 10},
-            ]}
+            style={[globalStyles.searchBar]}
+            inputStyle={[globalStyles.searchBarInput]}
           />
           {/* <View style={[styles.rowEnd]}>
             <Button onPress={clearAll}>Clear All</Button>

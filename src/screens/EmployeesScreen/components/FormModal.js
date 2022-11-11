@@ -24,6 +24,8 @@ import {
 } from '../../../services/user.services';
 import {useEffect} from 'react';
 import DropDownPicker from 'react-native-dropdown-picker';
+import {useDispatch} from 'react-redux';
+import {setUpdateDashboard} from '../../../redux/user/userSlice';
 
 const schema = yup.object().shape({
   name: yup.string().required('Required'),
@@ -77,6 +79,8 @@ function FormModal({
   const [reportsToValue, setReportsToValue] = useState(
     employee?.reportsTo?.id || '',
   );
+
+  const dispatch = useDispatch();
 
   const [showDesignationsDropDown, setShowDesignationsDropDown] =
     useState(false);
@@ -170,6 +174,7 @@ function FormModal({
         setIsLoading(false);
         refresh();
         ToastAndroid.show('Added employee details', 1500);
+        dispatch(setUpdateDashboard());
         hideModal();
       })
       .catch(err => {

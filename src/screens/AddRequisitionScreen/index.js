@@ -9,7 +9,7 @@ import Loader from './../../components/Loader';
 import Error from './../../components/Error';
 import {addRequisition} from '../../services/user.services';
 import {useDispatch, useSelector} from 'react-redux';
-import {setShouldRefresh} from '../../redux/user/userSlice';
+import {setShouldRefresh, setUpdateDashboard} from '../../redux/user/userSlice';
 
 function AddRequistionScreen({navigation}) {
   const [isLoading, setIsLoading] = useState(false);
@@ -25,6 +25,7 @@ function AddRequistionScreen({navigation}) {
         setIsLoading(false);
         ToastAndroid.show('Requisition added', 1500);
         dispatch(setShouldRefresh());
+        dispatch(setUpdateDashboard());
         navigation.goBack();
       })
       .catch(err => {

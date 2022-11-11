@@ -2,6 +2,7 @@ import {createSlice} from '@reduxjs/toolkit';
 
 const initialState = {
   shouldRefresh: false,
+  updateDashboard: true,
 };
 
 export const userSlice = createSlice({
@@ -14,8 +15,19 @@ export const userSlice = createSlice({
     unsetShouldRefresh: (state, action) => {
       return {...state, shouldRefresh: false};
     },
+    setUpdateDashboard: (state, action) => {
+      return {...state, updateDashboard: true};
+    },
+    unsetUpdateDashboard: (state, action) => {
+      return {...state, updateDashboard: false};
+    },
   },
 });
 
-export const {setShouldRefresh, unsetShouldRefresh} = userSlice.actions;
+export const {
+  setShouldRefresh,
+  unsetShouldRefresh,
+  setUpdateDashboard,
+  unsetUpdateDashboard,
+} = userSlice.actions;
 export default userSlice.reducer;

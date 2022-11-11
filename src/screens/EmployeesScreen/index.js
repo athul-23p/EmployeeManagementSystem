@@ -259,6 +259,7 @@ function EmployeesScreen() {
             }
             onSubmitEditing={() => fetchEmployees(1, actions.searchEmployees)}
             value={searchQuery}
+            inputStyle={[globalStyles.searchBarInput]}
           />
         </View>
         <View style={[styles.row, {zIndex: 9991}]}>
@@ -310,7 +311,7 @@ function EmployeesScreen() {
             />
           </View>
         </View>
-        <View style={{marginVertical: 5, flex: 1}}>
+        <View style={{marginTop: 5, flex: 1}}>
           {isLoading ? (
             <Loader />
           ) : error ? (

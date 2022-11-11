@@ -133,6 +133,7 @@ function RequisitionsScreen({navigation}) {
             onChangeText={handleSearchInput}
             onSubmitEditing={search}
             style={[globalStyles.searchBar]}
+            inputStyle={[globalStyles.searchBarInput]}
           />
         </View>
         <View>

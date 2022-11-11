@@ -10,7 +10,9 @@ import {
   ActivityIndicator,
   Portal,
 } from 'react-native-paper';
+import {useDispatch} from 'react-redux';
 import DeleteDialog from '../../../components/DeleteDialog';
+import {setUpdateDashboard} from '../../../redux/user/userSlice';
 import {deleteRequisitionById} from '../../../services/user.services';
 
 function RequisitionCard({
@@ -25,12 +27,14 @@ function RequisitionCard({
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const openDialog = () => setShowDeleteDialog(true);
   const closeDialog = () => setShowDeleteDialog(false);
+  const dispatch = useDispatch();
 
   const handleDelete = () => {
     setIsLoading(true);
     deleteRequisitionById(token, id)
       .then(res => {
         setIsLoading(false);
+        dispatch(setUpdateDashboard());
         requestRefresh();
       })
       .catch(err => {

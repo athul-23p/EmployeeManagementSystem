@@ -91,11 +91,16 @@ function LoginScreen({navigation}) {
     return <Error error={error} handleError={() => setError(null)} />;
   }
   return (
-    <KeyboardAwareScrollView contentContainerStyle={globalStyle.container}>
+    <KeyboardAwareScrollView
+      contentContainerStyle={[
+        globalStyle.container,
+        {backgroundColor: 'white'},
+      ]}>
       <Text
         style={[
           globalStyle.heading,
           {textAlign: 'center', marginVertical: 20},
+          // {color: 'white'},
         ]}>
         Log In
       </Text>

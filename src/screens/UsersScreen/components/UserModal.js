@@ -7,6 +7,8 @@ import {yupResolver} from '@hookform/resolvers/yup';
 import ControllerWrappedInput from '../../../components/ControllerWrappedInput';
 import {ToastAndroid, View, Text} from 'react-native';
 import Loader from '../../../components/Loader';
+import {useDispatch} from 'react-redux';
+import {setUpdateDashboard} from '../../../redux/user/userSlice';
 
 const schema = yup.object().shape({
   name: yup.string().required('Required'),
@@ -39,6 +41,7 @@ function UserModal({
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const dispatch = useDispatch();
 
   const handleSave = data => {
     console.log(data);
@@ -46,6 +49,7 @@ function UserModal({
     onSave(data)
       .then(res => {
         setIsLoading(false);
+        dispatch(setUpdateDashboard()); // requires modification if edit option is implemented
         ToastAndroid.show(successMsg, 1500);
         requestRefresh();
         onDismiss();
