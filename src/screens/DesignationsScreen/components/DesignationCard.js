@@ -21,6 +21,7 @@ import globalStyles from '../../../styles/globalStyles';
 import DeleteDialog from '../../../components/DeleteDialog';
 import {useDispatch} from 'react-redux';
 import {setUpdateDashboard} from '../../../redux/user/userSlice';
+import ControllerWrappedInput from '../../../components/ControllerWrappedInput';
 const schema = yup.object().shape({
   designation: yup.string().required('Required'),
 });
@@ -33,7 +34,7 @@ function DesignationCard({item, token, refresh}) {
   const openDialog = () => setShowDeleteDialog(true);
   const closeDialog = () => setShowDeleteDialog(false);
   const dispatch = useDispatch();
-
+  
   const {
     control,
     handleSubmit,
@@ -95,20 +96,14 @@ function DesignationCard({item, token, refresh}) {
           onDismiss={closeEditModal}
           contentContainerStyle={[globalStyles.modal]}>
           <Headline style={{marginVertical: 10}}>Edit Designation</Headline>
-          <Controller
+          <ControllerWrappedInput
             control={control}
-            name="designation"
-            render={({field: {onChange, onBlur, value}}) => (
-              <TextInput
-                onChangeText={onChange}
-                value={value}
-                mode="outlined"
-                label={'Designation'}
-                style={globalStyles.textInput}
-              />
-            )}
+            errors={errors}
+            name='designation'
+            label='Designation'
+
           />
-          {errors.designation && <Text>{errors.designation.message}</Text>}
+         
           <View style={[styles.modalButtonGroup]}>
             <Button onPress={closeEditModal}>Close</Button>
             {isLoading ? (

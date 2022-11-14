@@ -22,6 +22,7 @@ function StatisticsCard({route, title, stats}) {
 const styles = StyleSheet.create({
   container: {
     width: '44%',
+    // maxWidth: 300,
     height: 130,
     padding: 10,
     paddingHorizontal: 15,

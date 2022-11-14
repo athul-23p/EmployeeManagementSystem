@@ -1,6 +1,7 @@
 import {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, FlatList, ToastAndroid} from 'react-native';
 import {
+  ActivityIndicator,
   Button,
   FAB,
   Headline,
@@ -10,7 +11,7 @@ import {
   TextInput,
 } from 'react-native-paper';
 import * as yup from 'yup';
-import {useForm, Controller} from 'react-hook-form';
+import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 
 import AppbarWrapper from '../../components/AppbarWrapper';
@@ -22,14 +23,17 @@ import Loader from '../../components/Loader';
 import Error from '../../components/Error';
 import ListItems from '../../components/ListItems';
 import {setUpdateDashboard} from '../../redux/user/userSlice';
+import ControllerWrappedInput from '../../components/ControllerWrappedInput';
 
 const designationSchema = yup.object().shape({
   designation: yup.string().required('Required'),
 });
 
+const firstPage = 0;
+
 function DesignationsScreen({navigation}) {
   const [searchQuery, setSearchQuery] = useState('');
-  const [page, setPage] = useState(0);
+
   const [pagination, setPagination] = useState({});
   const [designations, setDesignations] = useState([]);
 
@@ -63,7 +67,7 @@ function DesignationsScreen({navigation}) {
         closeModal();
         ToastAndroid.show(`Added ${res.data.name} to Designations`, 1500);
         dispatch(setUpdateDashboard());
-        fetchData(true);
+        fetchData(firstPage, true);
       })
       .catch(err => {
         console.log(err);
@@ -73,10 +77,10 @@ function DesignationsScreen({navigation}) {
 
   const handleSearch = () => {
     setPage(0);
-    fetchData(true);
+    fetchData(firstPage, true);
   };
 
-  const fetchData = (clearData = false) => {
+  const fetchData = (page = firstPage, clearData = false) => {
     setIsLoading(true);
     getDesignations(accessToken, page, searchQuery)
       .then(res => {
@@ -99,14 +103,12 @@ function DesignationsScreen({navigation}) {
   };
 
   const refreshData = () => {
-    setPage(0);
-    fetchData(true);
+    fetchData(firstPage, true);
   };
 
   const nextPage = () => {
-    if (page < pagination?.totalPage - 1) {
-      setPage(page => page + 1);
-      fetchData();
+    if (pagination?.currentPage < pagination?.totalPage - 1) {
+      fetchData(pagination?.currentPage + 1);
     } else {
       ToastAndroid.show('End of list', 1500);
     }
@@ -157,22 +159,19 @@ function DesignationsScreen({navigation}) {
           onDismiss={closeModal}
           contentContainerStyle={[globalStyles.modal]}>
           <Headline style={{marginVertical: 10}}>Add Designation</Headline>
-          <Controller
+          <ControllerWrappedInput
             control={control}
             name="designation"
-            render={({field: {onChange, onBlur, value}}) => (
-              <TextInput
-                onChangeText={onChange}
-                value={value}
-                mode="outlined"
-                label={'Designation'}
-              />
-            )}
+            errors={errors}
+            label="Designation"
           />
-          {errors.designation && <Text>{errors.designation.message}</Text>}
           <View style={[styles.modalButtonGroup]}>
             <Button onPress={closeModal}>Close</Button>
-            <Button onPress={handleSubmit(handleAddDesignation)}>Add</Button>
+            {isLoading ? (
+              <ActivityIndicator />
+            ) : (
+              <Button onPress={handleSubmit(handleAddDesignation)}>Add</Button>
+            )}
           </View>
         </Modal>
       </Portal>

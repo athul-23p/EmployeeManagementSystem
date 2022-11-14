@@ -17,13 +17,13 @@ import TabNavigator from './src/navigators/TabNavigator';
 import store from './src/redux/store';
 const App = () => {
   return (
-    <PaperProvider>
-      <StoreProvider store={store}>
+    <StoreProvider store={store}>
+      <PaperProvider>
         <NavigationContainer>
           <Content />
         </NavigationContainer>
-      </StoreProvider>
-    </PaperProvider>
+      </PaperProvider>
+    </StoreProvider>
   );
 };
 

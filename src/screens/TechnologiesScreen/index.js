@@ -1,6 +1,7 @@
 import {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, FlatList, ToastAndroid} from 'react-native';
 import {
+  ActivityIndicator,
   Button,
   FAB,
   Headline,
@@ -10,7 +11,7 @@ import {
   TextInput,
 } from 'react-native-paper';
 import * as yup from 'yup';
-import {useForm, Controller} from 'react-hook-form';
+import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 
 import AppbarWrapper from '../../components/AppbarWrapper';
@@ -22,6 +23,7 @@ import Loader from '../../components/Loader';
 import Error from '../../components/Error';
 import ListItems from '../../components/ListItems';
 import {setUpdateDashboard} from '../../redux/user/userSlice';
+import ControllerWrappedInput from '../../components/ControllerWrappedInput';
 
 const schema = yup.object().shape({
   technology: yup.string().required('Required'),
@@ -154,22 +156,20 @@ function TechnologiesScreen({navigation}) {
           onDismiss={closeModal}
           contentContainerStyle={[globalStyles.modal]}>
           <Headline style={{marginVertical: 10}}>Add Technology</Headline>
-          <Controller
+          <ControllerWrappedInput
             control={control}
             name="technology"
-            render={({field: {onChange, onBlur, value}}) => (
-              <TextInput
-                onChangeText={onChange}
-                value={value}
-                mode="outlined"
-                label={'Technology'}
-              />
-            )}
+            label={'Technology'}
+            errors={errors}
           />
-          {errors.technology && <Text>{errors.technology.message}</Text>}
+
           <View style={[styles.modalButtonGroup]}>
             <Button onPress={closeModal}>Close</Button>
-            <Button onPress={handleSubmit(handleAddTechnology)}>Add</Button>
+            {isLoading ? (
+              <ActivityIndicator />
+            ) : (
+              <Button onPress={handleSubmit(handleAddTechnology)}>Add</Button>
+            )}
           </View>
         </Modal>
       </Portal>

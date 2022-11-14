@@ -21,6 +21,7 @@ import globalStyles from '../../../styles/globalStyles';
 import DeleteDialog from '../../../components/DeleteDialog';
 import {useDispatch} from 'react-redux';
 import {setUpdateDashboard} from '../../../redux/user/userSlice';
+import ControllerWrappedInput from '../../../components/ControllerWrappedInput';
 const schema = yup.object().shape({
   technology: yup.string().required('Required'),
 });
@@ -95,20 +96,13 @@ function TechnologyCard({item, token, refresh}) {
           onDismiss={closeEditModal}
           contentContainerStyle={[globalStyles.modal]}>
           <Headline style={{marginVertical: 10}}>Edit Technology</Headline>
-          <Controller
+          <ControllerWrappedInput
             control={control}
             name="technology"
-            render={({field: {onChange, onBlur, value}}) => (
-              <TextInput
-                onChangeText={onChange}
-                value={value}
-                mode="outlined"
-                label={'Technology'}
-                style={globalStyles.textInput}
-              />
-            )}
+            label={'Technology'}
+            errors={errors}
           />
-          {errors.technology && <Text>{errors.technology.message}</Text>}
+
           <View style={[styles.modalButtonGroup]}>
             <Button onPress={closeEditModal}>Close</Button>
             {isLoading ? (

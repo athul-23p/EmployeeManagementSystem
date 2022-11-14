@@ -34,10 +34,6 @@ const schema = yup.object().shape({
     .string()
     .required('Required')
     .length(10, 'Must be a valid number'),
-  //   joiningDate: yup.string().required('Required'),
-  //   reportsTo: yup.string().required('Required'),
-  //   designation: yup.string().required('Required'),
-  //   technologies: yup.array().of(yup.string()),
 });
 
 function FormModal({
@@ -154,13 +150,7 @@ function FormModal({
       setError(error);
     }
   };
-  // const handleClick = () => {
-  //   console.log('rtdd clicked', showReportsToDropDown);
-  //   if (showReportsToDropDown) {
-  //     setShowReportsToDropDown(false);
-  //   }
-  //   console.log('after', showReportsToDropDown);
-  // };
+
   const handleSave = data => {
     setIsLoading(true);
     onSave({
@@ -229,7 +219,7 @@ function FormModal({
           mode="outlined"
           editable={false}
         />
-        <View>
+        <View style={{zIndex: 10000}}>
           <Text style={styles.label}>Designation</Text>
           <DropDownPicker
             placeholder="Designation"
@@ -281,7 +271,7 @@ function FormModal({
             setValue={setReportsToValue}
             setItems={fetchReportsTo}
             containerStyle={[styles.dropdown, {marginBottom: 100}]}
-            onChangeValue={() => console.log('rtdd')}
+            
             dropDownDirection="BOTTOM"
             listMode="SCROLLVIEW"
             scrollViewProps={{
@@ -295,19 +285,19 @@ function FormModal({
             closeAfterSelecting
           />
         </View>
+        {isLoading ? (
+          <ActivityIndicator />
+        ) : error ? (
+          <View>
+            <Text style={[globalStyles.errroMessage, {textAlign: 'center'}]}>
+              Something went wrong....
+            </Text>
+            <Button onPress={() => setError(null)}>Retry</Button>
+          </View>
+        ) : (
+          <Button onPress={handleSubmit(handleSave)}>{buttonLabel}</Button>
+        )}
       </ScrollView>
-      {isLoading ? (
-        <ActivityIndicator />
-      ) : error ? (
-        <View>
-          <Text style={[globalStyles.errroMessage, {textAlign: 'center'}]}>
-            Something went wrong....
-          </Text>
-          <Button onPress={() => setError(null)}>Retry</Button>
-        </View>
-      ) : (
-        <Button onPress={handleSubmit(handleSave)}>{buttonLabel}</Button>
-      )}
     </Modal>
   );
 }
@@ -322,7 +312,7 @@ const styles = StyleSheet.create({
   dropdownContainer: {
     borderWidth: 0,
     elevation: 10,
-    zIndex: 31000,
+    zIndex: 66000,
     backgroundColor: '#eeeeff',
   },
   label: {

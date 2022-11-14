@@ -4,18 +4,20 @@ import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import {Button, Text} from 'react-native-paper';
-import {StyleSheet, ToastAndroid, View} from 'react-native';
+import {ScrollView, StyleSheet, ToastAndroid, View} from 'react-native';
 import globalStyle from '../../styles/globalStyles';
 import {useDispatch} from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {login} from '../../redux/auth/authSlice';
 import {login as userLogin} from '../../services/auth.services';
+import {useDimensions} from '@react-native-community/hooks';
 
 import Loader from '../../components/Loader';
 import Error from '../../components/Error';
 import {getData, storeData} from '../../utils/storage';
 import {AuthKey} from '../../constants/storage_keys';
 import ControllerWrappedInput from '../../components/ControllerWrappedInput';
+import {useWindowDimensions} from 'react-native';
 
 const userSchema = yup.object().shape({
   email: yup
@@ -36,6 +38,9 @@ function LoginScreen({navigation}) {
     },
     resolver: yupResolver(userSchema),
   });
+  const dimensions = useDimensions();
+  const window = useWindowDimensions();
+
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const dispatch = useDispatch();
@@ -71,6 +76,8 @@ function LoginScreen({navigation}) {
     }
   };
 
+  // console.log('dimenesions', dimensions);
+  // console.log('rendered : screen', window);
   useEffect(() => {
     // load auth data from async storage
     getData(AuthKey)
@@ -91,44 +98,53 @@ function LoginScreen({navigation}) {
     return <Error error={error} handleError={() => setError(null)} />;
   }
   return (
-    <KeyboardAwareScrollView
-      contentContainerStyle={[
-        globalStyle.container,
-        {backgroundColor: 'white'},
-      ]}>
-      <Text
-        style={[
-          globalStyle.heading,
-          {textAlign: 'center', marginVertical: 20},
-          // {color: 'white'},
-        ]}>
-        Log In
-      </Text>
-      <View style={styles.loginForm}>
-        <View style={styles.imageContainer}>
-          <Icon name="account-circle" color="#6200EE" size={50} />
-        </View>
-        <ControllerWrappedInput
-          control={control}
-          name="email"
-          label="Email"
-          errors={errors}
-          keyboardType="email-address"
-        />
+    <>
+      <KeyboardAwareScrollView
+        contentContainerStyle={{
+          alignItems: 'center',
+          flex: 1,
+        }}>
+        <ScrollView
+          style={{
+            width: '95%',
+            maxWidth: 400,
+            flex: 1,
+          }}>
+          <Text
+            style={[
+              globalStyle.heading,
+              {textAlign: 'center', marginVertical: 20},
+              // {color: 'white'},
+            ]}>
+            Log In
+          </Text>
+          <View style={styles.loginForm}>
+            <View style={styles.imageContainer}>
+              <Icon name="account-circle" color="#6200EE" size={50} />
+            </View>
+            <ControllerWrappedInput
+              control={control}
+              name="email"
+              label="Email"
+              errors={errors}
+              keyboardType="email-address"
+            />
 
-        <ControllerWrappedInput
-          control={control}
-          name="password"
-          label="Password"
-          errors={errors}
-          secureTextEntry={true}
-        />
+            <ControllerWrappedInput
+              control={control}
+              name="password"
+              label="Password"
+              errors={errors}
+              secureTextEntry={true}
+            />
 
-        <Button onPress={handleSubmit(handleLogin)} loading={isLoading}>
-          Log in
-        </Button>
-      </View>
-    </KeyboardAwareScrollView>
+            <Button onPress={handleSubmit(handleLogin)} loading={isLoading}>
+              Log in
+            </Button>
+          </View>
+        </ScrollView>
+      </KeyboardAwareScrollView>
+    </>
   );
 }
 

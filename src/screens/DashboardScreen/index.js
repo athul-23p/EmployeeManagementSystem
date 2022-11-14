@@ -59,10 +59,9 @@ function DashBoardScreen({navigation}) {
 
   return (
     <AppbarWrapper title={'Dashboard'}>
-      <View style={{width: '100%', alignItems: 'center'}}>
-        <ScrollView
-          contentContainerStyle={[styles.cardsContainer]}
-          style={{height: '92%'}}>
+      {/* <View style={{width: '100%', alignItems: 'center'}}> */}
+      <ScrollView contentContainerStyle={[{alignItems: 'center'}]}>
+        <View style={[styles.cardsContainer, {width: '100%'}]}>
           {Cards.map(({title, route}) => (
             <StatisticsCard
               title={title}
@@ -71,8 +70,8 @@ function DashBoardScreen({navigation}) {
               route={route}
             />
           ))}
-        </ScrollView>
-      </View>
+        </View>
+      </ScrollView>
     </AppbarWrapper>
   );
 }

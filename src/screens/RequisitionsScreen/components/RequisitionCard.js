@@ -88,6 +88,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderBottomColor: 10,
     borderRadius: 20,
+    maxWidth: 420,
   },
   row: {
     // flexDirection: 'row',
